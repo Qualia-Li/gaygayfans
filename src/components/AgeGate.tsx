@@ -6,7 +6,7 @@ export default function AgeGate() {
   const setVerified = useAgeGate((s) => s.setVerified);
 
   return (
-    <main className="fixed inset-0 z-50 flex items-center justify-center bg-black">
+    <main className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black">
       <div className="mx-4 max-w-md w-full rounded-2xl bg-zinc-900 p-8 text-center">
         <div className="mb-6 text-5xl" aria-hidden="true">🏳️‍🌈</div>
         <h1 className="mb-2 text-2xl font-bold text-white">
