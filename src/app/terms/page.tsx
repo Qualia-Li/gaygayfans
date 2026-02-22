@@ -2,8 +2,8 @@ import LegalLayout from "@/components/LegalLayout";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Terms of Service — GayGayFans",
-  description: "GayGayFans terms of service. Rules and guidelines for using our platform.",
+  title: "Terms of Service — GayGayFans Usage Rules & Guidelines",
+  description: "GayGayFans terms of service. Rules for using our gay adult video platform including age requirements, prohibited conduct, and DMCA process.",
 };
 
 export default function TermsPage() {

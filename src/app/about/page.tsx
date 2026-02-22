@@ -2,8 +2,8 @@ import LegalLayout from "@/components/LegalLayout";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "About — GayGayFans",
-  description: "Learn about GayGayFans, a safe and legal platform for curated gay adult video content from verified creators.",
+  title: "About GayGayFans — Safe Gay Adult Video Platform",
+  description: "Learn about GayGayFans — a safe and legal TikTok-style platform for curated gay adult video content from verified creators. No piracy, ever.",
 };
 
 export default function AboutPage() {

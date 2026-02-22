@@ -2,8 +2,8 @@ import LegalLayout from "@/components/LegalLayout";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Contact — GayGayFans",
-  description: "Contact GayGayFans for support, content takedown requests, creator inquiries, or general feedback.",
+  title: "Contact GayGayFans — Support, Takedowns & Creator Inquiries",
+  description: "Contact GayGayFans for support, DMCA takedown requests, creator partnership inquiries, or to report content that violates our policies.",
 };
 
 export default function ContactPage() {

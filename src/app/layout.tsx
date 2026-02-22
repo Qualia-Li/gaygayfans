@@ -12,7 +12,7 @@ const siteUrl = "https://gaygayfans.vercel.app";
 export const metadata: Metadata = {
   title: "GayGayFans — Gay Video Feed | Adult Content for Gay Men",
   description:
-    "GayGayFans is a TikTok-style vertical video feed featuring curated gay adult content. Browse, discover, and enjoy videos from verified creators in a safe, legal, and community-driven platform for gay men. 18+ only.",
+    "GayGayFans is a TikTok-style vertical video feed with curated gay adult content from verified creators. Safe, legal, community-driven. 18+ only.",
   metadataBase: new URL(siteUrl),
   alternates: {
     canonical: "/",

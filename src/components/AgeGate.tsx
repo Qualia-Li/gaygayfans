@@ -68,6 +68,14 @@ export default function AgeGate() {
           No, take me away
         </a>
       </div>
+
+      <div className="mt-8 flex flex-wrap justify-center gap-3 text-xs text-zinc-500">
+        <a href="/about">About</a>
+        <a href="/privacy">Privacy</a>
+        <a href="/terms">Terms</a>
+        <a href="/content-policy">Content Policy</a>
+        <a href="/contact">Contact</a>
+      </div>
     </main>
   );
 }

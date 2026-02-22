@@ -2,7 +2,7 @@ import LegalLayout from "@/components/LegalLayout";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Content Policy — GayGayFans",
+  title: "Content Policy — GayGayFans Creator & Upload Guidelines",
   description: "GayGayFans content policy. Our rules on what content is allowed and how we verify creators.",
 };
 
