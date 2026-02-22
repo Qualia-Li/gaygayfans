@@ -17,6 +17,10 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/",
   },
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/favicon.png",
+  },
   openGraph: {
     type: "website",
     title: "GayGayFans — Gay Video Feed",
@@ -25,12 +29,21 @@ export const metadata: Metadata = {
     url: siteUrl,
     siteName: "GayGayFans",
     locale: "en_US",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1536,
+        height: 1024,
+        alt: "GayGayFans — Gay Video Feed • 18+",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "GayGayFans — Gay Video Feed",
     description:
       "A TikTok-style vertical video feed featuring curated gay adult content from verified creators. 18+ only.",
+    images: ["/og-image.png"],
   },
   robots: {
     index: true,
