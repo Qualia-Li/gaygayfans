@@ -6,7 +6,8 @@ export default function AgeGate() {
   const setVerified = useAgeGate((s) => s.setVerified);
 
   return (
-    <main className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black">
+    <main className="fixed inset-0 z-50 overflow-y-auto bg-black">
+      <div className="flex min-h-dvh flex-col items-center justify-center py-8">
       <div className="mx-4 max-w-md w-full rounded-2xl bg-zinc-900 p-8 text-center">
         <div className="mb-6 text-5xl" aria-hidden="true">🏳️‍🌈</div>
         <h1 className="mb-2 text-2xl font-bold text-white">
@@ -69,12 +70,13 @@ export default function AgeGate() {
         </a>
       </div>
 
-      <div className="mt-8 flex flex-wrap justify-center gap-3 text-xs text-zinc-500">
+      <div className="mt-6 flex flex-wrap justify-center gap-3 text-xs text-zinc-500">
         <a href="/about">About</a>
         <a href="/privacy">Privacy</a>
         <a href="/terms">Terms</a>
         <a href="/content-policy">Content Policy</a>
         <a href="/contact">Contact</a>
+      </div>
       </div>
     </main>
   );
