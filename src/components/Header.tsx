@@ -13,9 +13,9 @@ export default function Header() {
       </div>
       <Link
         href="/rate"
-        className="pointer-events-auto text-sm font-medium text-white/80 hover:text-white bg-white/10 hover:bg-white/20 px-3 py-1 rounded-full backdrop-blur transition-all drop-shadow-lg"
+        className="pointer-events-auto text-sm font-bold text-white bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-400 hover:to-purple-500 px-4 py-1.5 rounded-full shadow-lg shadow-pink-500/30 transition-all animate-pulse hover:animate-none drop-shadow-lg"
       >
-        Rate
+        Rate Videos
       </Link>
     </div>
   );

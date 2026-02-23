@@ -10,11 +10,12 @@ function formatCount(n: number): string {
   return n.toString();
 }
 
-export default function VideoCard({ video }: { video: Video }) {
+export default function VideoCard({ video, lazy = false }: { video: Video; lazy?: boolean }) {
   const { videoRef, containerRef, togglePlay } = useVideoAutoplay();
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(video.likes);
   const [paused, setPaused] = useState(false);
+  const [videoLoading, setVideoLoading] = useState(true);
 
   const handleLike = () => {
     setLiked(!liked);
@@ -31,6 +32,13 @@ export default function VideoCard({ video }: { video: Video }) {
       ref={containerRef}
       className="snap-item relative flex items-center justify-center bg-black"
     >
+      {/* Loading spinner */}
+      {videoLoading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black z-10">
+          <div className="h-10 w-10 rounded-full border-3 border-white/20 border-t-pink-500 animate-spin" />
+        </div>
+      )}
+
       {/* Video */}
       <video
         ref={videoRef}
@@ -39,8 +47,9 @@ export default function VideoCard({ video }: { video: Video }) {
         loop
         muted
         playsInline
-        preload="metadata"
+        preload={lazy ? "none" : "metadata"}
         onClick={handleTap}
+        onCanPlay={() => setVideoLoading(false)}
       />
 
       {/* Pause indicator */}
