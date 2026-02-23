@@ -1,0 +1,64 @@
+[
+  {
+    "id": "gay_general",
+    "name": "Gay General",
+    "description": "General gay content style",
+    "loras": [
+      { "path": "gay", "scale": 1.2 }
+    ]
+  },
+  {
+    "id": "cowgirl",
+    "name": "Cowgirl",
+    "description": "Cowgirl position style",
+    "loras": [
+      { "path": "gay", "scale": 1.2 },
+      { "path": "cowgirl", "scale": 1.5 }
+    ]
+  },
+  {
+    "id": "doggy",
+    "name": "Doggy",
+    "description": "Doggy position style",
+    "loras": [
+      { "path": "gay", "scale": 1.2 },
+      { "path": "doggy", "scale": 1.5 }
+    ]
+  },
+  {
+    "id": "oral",
+    "name": "Oral / BJ",
+    "description": "Oral / blowjob style",
+    "loras": [
+      { "path": "gay", "scale": 1.2 },
+      { "path": "bj", "scale": 1.5 }
+    ]
+  },
+  {
+    "id": "handjob",
+    "name": "Handjob",
+    "description": "Handjob / jerkoff style",
+    "loras": [
+      { "path": "gay", "scale": 1.2 },
+      { "path": "hj", "scale": 1.2 },
+      { "path": "orgasm", "scale": 0.8 }
+    ]
+  },
+  {
+    "id": "facial",
+    "name": "Facial",
+    "description": "Facial / cumshot style",
+    "loras": [
+      { "path": "f4c3_HIGH", "scale": 1.5 }
+    ]
+  },
+  {
+    "id": "missionary",
+    "name": "Missionary",
+    "description": "Missionary position style",
+    "loras": [
+      { "path": "gay", "scale": 1.2 },
+      { "path": "missionary", "scale": 1.5 }
+    ]
+  }
+]
