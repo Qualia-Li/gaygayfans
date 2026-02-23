@@ -1,14 +1,31 @@
 "use client";
 
 import Link from "next/link";
-import { Flex, Text, Button } from "@radix-ui/themes";
+import { Flex, Text, Button, Badge } from "@radix-ui/themes";
 import { useAuthStore } from "@/store/authStore";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AuthModal from "./AuthModal";
 
 export default function Header() {
-  const { email, isLoggedIn, credits } = useAuthStore();
+  const { email, isLoggedIn, credits, setAuth, logout } = useAuthStore();
   const [showAuth, setShowAuth] = useState(false);
+
+  // Check session on mount
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (data?.email) {
+          setAuth(data.email, data.credits ?? 0, data.ratingsCount ?? 0);
+        }
+      })
+      .catch(() => {});
+  }, [setAuth]);
+
+  const handleLogout = async () => {
+    await fetch("/api/auth/logout", { method: "POST" });
+    logout();
+  };
 
   return (
     <>
@@ -22,6 +39,11 @@ export default function Header() {
           </Flex>
 
           <Flex align="center" gap="3">
+            {isLoggedIn && (
+              <Badge size="2" color="pink" variant="solid" highContrast className="px-3 py-1">
+                ⚡ {credits} credits
+              </Badge>
+            )}
             <Link href="/rate">
               <Button
                 variant="solid"
@@ -38,8 +60,10 @@ export default function Header() {
             </Link>
             {isLoggedIn ? (
               <Flex align="center" gap="2">
-                <Text size="1" className="text-pink-300">{credits} credits</Text>
-                <Text size="1" className="text-zinc-400 max-w-[120px] truncate">{email}</Text>
+                <Text size="1" className="text-zinc-400 max-w-[100px] truncate hidden sm:block">{email}</Text>
+                <Button variant="ghost" size="1" color="gray" onClick={handleLogout} className="cursor-pointer">
+                  Logout
+                </Button>
               </Flex>
             ) : (
               <Button

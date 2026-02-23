@@ -60,15 +60,14 @@ export default function VideoComparison({ scenario }: VideoComparisonProps) {
         </div>
       )}
 
-      {/* Video variants */}
+      {/* Video variants — large display */}
       <Grid
         columns={{
           initial: "1",
-          md: scenario.variants.length === 1 ? "1" : "2",
-          lg: scenario.variants.length > 2 ? "3" : scenario.variants.length === 1 ? "1" : "2",
+          lg: scenario.variants.length === 1 ? "1" : "2",
         }}
-        gap="4"
-        className={scenario.variants.length === 1 ? "max-w-lg" : ""}
+        gap="6"
+        className={scenario.variants.length === 1 ? "max-w-2xl" : ""}
       >
         {scenario.variants.map((variant) => (
           <Card key={variant.id} className="!bg-zinc-900 overflow-hidden !p-0">
@@ -77,7 +76,7 @@ export default function VideoComparison({ scenario }: VideoComparisonProps) {
               controls
               loop
               playsInline
-              className="w-full aspect-video object-contain bg-black"
+              className="w-full aspect-[4/3] object-contain bg-black"
             />
             <div className="p-4 space-y-3">
               <Text weight="medium" size="3">{variant.label}</Text>
