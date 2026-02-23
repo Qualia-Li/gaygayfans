@@ -8,12 +8,12 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
-const siteUrl = "https://gaygayfans.vercel.app";
+const siteUrl = "https://gaylyfans.com";
 
 export const metadata: Metadata = {
-  title: "GayGayFans — Gay Video Feed | Adult Content for Gay Men",
+  title: "GaylyFans — Gay Video Feed | Adult Content for Gay Men",
   description:
-    "GayGayFans is a TikTok-style vertical video feed with curated gay adult content from verified creators. Safe, legal, community-driven. 18+ only.",
+    "GaylyFans is a TikTok-style vertical video feed with curated gay adult content from verified creators. Safe, legal, community-driven. 18+ only.",
   metadataBase: new URL(siteUrl),
   alternates: {
     canonical: "/",
@@ -24,24 +24,24 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
-    title: "GayGayFans — Gay Video Feed",
+    title: "GaylyFans — Gay Video Feed",
     description:
       "A TikTok-style vertical video feed featuring curated gay adult content from verified creators. 18+ only.",
     url: siteUrl,
-    siteName: "GayGayFans",
+    siteName: "GaylyFans",
     locale: "en_US",
     images: [
       {
         url: "/og-image.png",
         width: 1536,
         height: 1024,
-        alt: "GayGayFans — Gay Video Feed • 18+",
+        alt: "GaylyFans — Gay Video Feed • 18+",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "GayGayFans — Gay Video Feed",
+    title: "GaylyFans — Gay Video Feed",
     description:
       "A TikTok-style vertical video feed featuring curated gay adult content from verified creators. 18+ only.",
     images: ["/og-image.png"],

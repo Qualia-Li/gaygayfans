@@ -2,8 +2,8 @@ import LegalLayout from "@/components/LegalLayout";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Content Policy — GayGayFans Creator & Upload Guidelines",
-  description: "GayGayFans content policy. Our rules on what content is allowed and how we verify creators.",
+  title: "Content Policy — GaylyFans Creator & Upload Guidelines",
+  description: "GaylyFans content policy. Our rules on what content is allowed and how we verify creators.",
 };
 
 export default function ContentPolicyPage() {
@@ -13,7 +13,7 @@ export default function ContentPolicyPage() {
 
       <h2>1. Our Commitment</h2>
       <p>
-        GayGayFans is committed to providing a safe, legal, and respectful platform
+        GaylyFans is committed to providing a safe, legal, and respectful platform
         for gay adult content. We take content moderation seriously and maintain strict
         guidelines to protect creators, performers, and viewers.
       </p>
@@ -41,7 +41,7 @@ export default function ContentPolicyPage() {
 
       <h2>4. Creator Verification</h2>
       <p>
-        All creators on GayGayFans must undergo identity verification. We require:
+        All creators on GaylyFans must undergo identity verification. We require:
       </p>
       <ul>
         <li>Government-issued photo ID confirming age (18+)</li>
@@ -52,7 +52,7 @@ export default function ContentPolicyPage() {
 
       <h2>5. No Unauthorized Uploads</h2>
       <p>
-        GayGayFans does not allow users to upload content from unauthorized third-party
+        GaylyFans does not allow users to upload content from unauthorized third-party
         sources. All content must be original or properly licensed. We actively monitor
         for and remove pirated content.
       </p>

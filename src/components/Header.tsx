@@ -34,7 +34,7 @@ export default function Header() {
           <Flex align="center" gap="2">
             <Text size="4">🏳️‍🌈</Text>
             <Text size="4" weight="bold" className="text-white drop-shadow-lg">
-              GayGayFans
+              GaylyFans
             </Text>
           </Flex>
 

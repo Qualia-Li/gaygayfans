@@ -2,8 +2,8 @@ import LegalLayout from "@/components/LegalLayout";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy — How GayGayFans Protects Your Data",
-  description: "GayGayFans privacy policy. Learn how we collect, use, and protect your personal information. We collect minimal data and never sell it.",
+  title: "Privacy Policy — How GaylyFans Protects Your Data",
+  description: "GaylyFans privacy policy. Learn how we collect, use, and protect your personal information. We collect minimal data and never sell it.",
 };
 
 export default function PrivacyPage() {
@@ -13,7 +13,7 @@ export default function PrivacyPage() {
 
       <h2>1. Information We Collect</h2>
       <p>
-        GayGayFans collects minimal information to provide our service. We may collect:
+        GaylyFans collects minimal information to provide our service. We may collect:
       </p>
       <ul>
         <li>Browser type and version</li>

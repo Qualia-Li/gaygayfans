@@ -2,8 +2,8 @@ import LegalLayout from "@/components/LegalLayout";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Terms of Service — GayGayFans Usage Rules & Guidelines",
-  description: "GayGayFans terms of service. Rules for using our gay adult video platform including age requirements, prohibited conduct, and DMCA process.",
+  title: "Terms of Service — GaylyFans Usage Rules & Guidelines",
+  description: "GaylyFans terms of service. Rules for using our gay adult video platform including age requirements, prohibited conduct, and DMCA process.",
 };
 
 export default function TermsPage() {
@@ -13,7 +13,7 @@ export default function TermsPage() {
 
       <h2>1. Acceptance of Terms</h2>
       <p>
-        By accessing GayGayFans, you agree to these Terms of Service. If you do not
+        By accessing GaylyFans, you agree to these Terms of Service. If you do not
         agree, you must leave the site immediately.
       </p>
 
@@ -26,7 +26,7 @@ export default function TermsPage() {
 
       <h2>3. Content</h2>
       <p>
-        GayGayFans hosts adult content intended for gay men. All content on this platform
+        GaylyFans hosts adult content intended for gay men. All content on this platform
         is curated and verified by our team. We do not allow:
       </p>
       <ul>
@@ -50,7 +50,7 @@ export default function TermsPage() {
 
       <h2>5. Intellectual Property</h2>
       <p>
-        All content on GayGayFans is owned by or licensed to us or our creators.
+        All content on GaylyFans is owned by or licensed to us or our creators.
         Unauthorized reproduction, distribution, or modification is strictly prohibited.
       </p>
 
@@ -68,7 +68,7 @@ export default function TermsPage() {
 
       <h2>7. Disclaimer</h2>
       <p>
-        GayGayFans is provided &ldquo;as is&rdquo; without warranties of any kind. We are not
+        GaylyFans is provided &ldquo;as is&rdquo; without warranties of any kind. We are not
         responsible for any damages arising from your use of the site.
       </p>
 

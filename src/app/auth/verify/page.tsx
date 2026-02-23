@@ -60,7 +60,7 @@ function VerifyContent() {
           <>
             <Text size="6">✅</Text>
             <Heading size="4">You&apos;re signed in!</Heading>
-            <Text size="2" color="gray">Welcome to GayGayFans.</Text>
+            <Text size="2" color="gray">Welcome to GaylyFans.</Text>
             <Link href="/">
               <Button className="cursor-pointer">Go to Feed</Button>
             </Link>

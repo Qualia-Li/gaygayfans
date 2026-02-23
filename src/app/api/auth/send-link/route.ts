@@ -9,18 +9,18 @@ export async function POST(req: NextRequest) {
   }
 
   const token = await createMagicToken(email);
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://gaygayfans.vercel.app";
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://gaylyfans.com";
   const magicLink = `${baseUrl}/auth/verify?token=${token}`;
 
   try {
     const resend = new Resend(process.env.RESEND_API_KEY);
     await resend.emails.send({
-      from: "GayGayFans <noreply@gaygayfans.vercel.app>",
+      from: "GaylyFans <noreply@gaylyfans.com>",
       to: email,
-      subject: "Your magic link to GayGayFans",
+      subject: "Your magic link to GaylyFans",
       html: `
         <div style="font-family: sans-serif; max-width: 400px; margin: 0 auto; padding: 20px;">
-          <h2>🏳️‍🌈 GayGayFans</h2>
+          <h2>🏳️‍🌈 GaylyFans</h2>
           <p>Click the button below to sign in:</p>
           <a href="${magicLink}" style="display: inline-block; background: linear-gradient(to right, #ec4899, #a855f7); color: white; padding: 12px 24px; border-radius: 999px; text-decoration: none; font-weight: bold;">
             Sign In

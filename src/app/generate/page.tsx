@@ -3,7 +3,7 @@ import { Container, Heading, Text } from "@radix-ui/themes";
 import GenerateForm from "@/components/generate/GenerateForm";
 
 export const metadata = {
-  title: "Generate Video — GayGayFans",
+  title: "Generate Video — GaylyFans",
   description: "Generate AI videos from X/Twitter post images",
 };
 

@@ -4,7 +4,7 @@ import ScenarioGrid from "@/components/rate/ScenarioGrid";
 import CreditsDisplay from "@/components/rate/CreditsDisplay";
 
 export const metadata = {
-  title: "Rate Videos — GayGayFans",
+  title: "Rate Videos — GaylyFans",
   description: "Compare and rate AI-generated video variants",
 };
 

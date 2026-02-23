@@ -1,5 +1,5 @@
 /**
- * Seed script: Uploads feed clips to Cloudflare R2 (gaygayfans bucket)
+ * Seed script: Uploads feed clips to Cloudflare R2 (gaylyfans bucket)
  * and generates src/data/feed-videos.json.
  *
  * Usage: npx tsx scripts/seed-feed.ts
@@ -14,7 +14,7 @@ const GAYLORA = path.join(process.env.HOME || "~", "proj/gaylora");
 const CLIPS_DIRS = [path.join(GAYLORA, "clips_v3"), path.join(GAYLORA, "clips_v2")];
 const OUTPUT = path.join(__dirname, "../src/data/feed-videos.json");
 
-const R2_BUCKET = "gaygayfans";
+const R2_BUCKET = "gaylyfans";
 const R2_PUBLIC_BASE = "https://pub-be9e0552363545c5a4778d2715805f99.r2.dev";
 
 const CREATORS = [

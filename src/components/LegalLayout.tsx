@@ -14,7 +14,7 @@ export default function LegalLayout({
         <Container size="3">
           <Flex align="center" gap="4" className="px-4 py-3">
             <Link href="/" className="text-lg font-bold hover:opacity-80">
-              🏳️‍🌈 GayGayFans
+              🏳️‍🌈 GaylyFans
             </Link>
           </Flex>
         </Container>

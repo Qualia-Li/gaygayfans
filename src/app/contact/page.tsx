@@ -2,8 +2,8 @@ import LegalLayout from "@/components/LegalLayout";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Contact GayGayFans — Support, Takedowns & Creator Inquiries",
-  description: "Contact GayGayFans for support, DMCA takedown requests, creator partnership inquiries, or to report content that violates our policies.",
+  title: "Contact GaylyFans — Support, Takedowns & Creator Inquiries",
+  description: "Contact GaylyFans for support, DMCA takedown requests, creator partnership inquiries, or to report content that violates our policies.",
 };
 
 export default function ContactPage() {
@@ -15,9 +15,9 @@ export default function ContactPage() {
 
       <h2>General Inquiries</h2>
       <p>
-        For general questions, feedback, or suggestions about GayGayFans, email us at:{" "}
-        <a href="mailto:hello@gaygayfans.com" className="text-pink-400 hover:text-pink-300">
-          hello@gaygayfans.com
+        For general questions, feedback, or suggestions about GaylyFans, email us at:{" "}
+        <a href="mailto:hello@gaylyfans.com" className="text-pink-400 hover:text-pink-300">
+          hello@gaylyfans.com
         </a>
       </p>
 
@@ -25,8 +25,8 @@ export default function ContactPage() {
       <p>
         If you believe content on our platform infringes your copyright or was posted
         without your consent, please email:{" "}
-        <a href="mailto:takedown@gaygayfans.com" className="text-pink-400 hover:text-pink-300">
-          takedown@gaygayfans.com
+        <a href="mailto:takedown@gaylyfans.com" className="text-pink-400 hover:text-pink-300">
+          takedown@gaylyfans.com
         </a>
       </p>
       <p>Include the following in your request:</p>
@@ -40,17 +40,17 @@ export default function ContactPage() {
 
       <h2>Creator Inquiries</h2>
       <p>
-        Interested in sharing your content on GayGayFans? Email:{" "}
-        <a href="mailto:creators@gaygayfans.com" className="text-pink-400 hover:text-pink-300">
-          creators@gaygayfans.com
+        Interested in sharing your content on GaylyFans? Email:{" "}
+        <a href="mailto:creators@gaylyfans.com" className="text-pink-400 hover:text-pink-300">
+          creators@gaylyfans.com
         </a>
       </p>
 
       <h2>Report Abuse</h2>
       <p>
         To report illegal content or abuse, email:{" "}
-        <a href="mailto:abuse@gaygayfans.com" className="text-pink-400 hover:text-pink-300">
-          abuse@gaygayfans.com
+        <a href="mailto:abuse@gaylyfans.com" className="text-pink-400 hover:text-pink-300">
+          abuse@gaylyfans.com
         </a>
       </p>
       <p>

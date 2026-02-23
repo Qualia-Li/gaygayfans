@@ -17,7 +17,7 @@ const TEST_RESULTS_DIR = path.join(
 const SCENARIOS_OUT = path.join(__dirname, "../src/data/scenarios.json");
 const METADATA_OUT = path.join(__dirname, "../src/data/lora-metadata.json");
 
-const R2_BUCKET = "gaygayfans";
+const R2_BUCKET = "gaylyfans";
 const R2_PUBLIC_BASE = "https://pub-be9e0552363545c5a4778d2715805f99.r2.dev";
 
 const VARIANT_LABELS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
