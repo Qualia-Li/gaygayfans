@@ -42,11 +42,18 @@ interface LoraMeta {
   variants: LoraVariantMeta[];
 }
 
-function uploadToR2(localPath: string, r2Key: string): string {
-  const cmd = `npx wrangler r2 object put "${R2_BUCKET}/${r2Key}" --file="${localPath}" --content-type="${
-    r2Key.endsWith(".mp4") ? "video/mp4" : "image/jpeg"
-  }"`;
-  execSync(cmd, { stdio: "pipe" });
+function uploadToR2(localPath: string, r2Key: string, retries = 3): string {
+  const contentType = r2Key.endsWith(".mp4") ? "video/mp4" : "image/jpeg";
+  const cmd = `npx wrangler r2 object put "${R2_BUCKET}/${r2Key}" --file="${localPath}" --content-type="${contentType}" --remote`;
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      execSync(cmd, { stdio: "pipe" });
+      return `${R2_PUBLIC_BASE}/${r2Key}`;
+    } catch (err) {
+      if (attempt === retries) throw err;
+      console.log(`    Retry ${attempt}/${retries} for ${r2Key}...`);
+    }
+  }
   return `${R2_PUBLIC_BASE}/${r2Key}`;
 }
 

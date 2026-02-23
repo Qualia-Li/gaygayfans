@@ -10,7 +10,8 @@ import { execSync } from "child_process";
 import * as fs from "fs";
 import * as path from "path";
 
-const CLIPS_DIRS = ["/tmp/lora_training/clips_v3", "/tmp/lora_training/clips"];
+const GAYLORA = path.join(process.env.HOME || "~", "proj/gaylora");
+const CLIPS_DIRS = [path.join(GAYLORA, "clips_v3"), path.join(GAYLORA, "clips_v2")];
 const OUTPUT = path.join(__dirname, "../src/data/feed-videos.json");
 
 const R2_BUCKET = "gaygayfans";
@@ -31,9 +32,17 @@ function randomInt(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function uploadToR2(localPath: string, r2Key: string): string {
-  const cmd = `npx wrangler r2 object put "${R2_BUCKET}/${r2Key}" --file="${localPath}" --content-type="video/mp4"`;
-  execSync(cmd, { stdio: "pipe" });
+function uploadToR2(localPath: string, r2Key: string, retries = 3): string {
+  const cmd = `npx wrangler r2 object put "${R2_BUCKET}/${r2Key}" --file="${localPath}" --content-type="video/mp4" --remote`;
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      execSync(cmd, { stdio: "pipe" });
+      return `${R2_PUBLIC_BASE}/${r2Key}`;
+    } catch (err) {
+      if (attempt === retries) throw err;
+      console.log(`    Retry ${attempt}/${retries} for ${r2Key}...`);
+    }
+  }
   return `${R2_PUBLIC_BASE}/${r2Key}`;
 }
 
