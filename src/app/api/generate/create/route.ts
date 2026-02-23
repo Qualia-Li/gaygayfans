@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession, updateUserCredits } from "@/lib/auth";
+import { notifyError } from "@/lib/notify";
 
 const WAVESPEED_API = "https://api.wavespeed.ai/api/v3/wavespeed-ai/wan-2.2/i2v-480p-lora";
 const GENERATION_COST = 3;
@@ -18,13 +19,13 @@ export async function POST(req: NextRequest) {
 
   const apiKey = process.env.WAVESPEED_API_KEY;
   if (!apiKey) {
+    await notifyError("generate/create", "WAVESPEED_API_KEY not configured");
     return NextResponse.json({ error: "WaveSpeed API not configured" }, { status: 500 });
   }
 
   // Atomically deduct credits BEFORE calling WaveSpeed (prevents double-spend)
   const newCredits = await updateUserCredits(session.email, -GENERATION_COST);
   if (newCredits === 0 && GENERATION_COST > 0) {
-    // Lua script returns 0 when insufficient credits
     return NextResponse.json(
       { error: `Need ${GENERATION_COST} credits to generate.` },
       { status: 403 }
@@ -47,10 +48,9 @@ export async function POST(req: NextRequest) {
     });
 
     if (!res.ok) {
-      // Refund credits on WaveSpeed failure
       await updateUserCredits(session.email, GENERATION_COST);
       const err = await res.text();
-      console.error("WaveSpeed error:", err);
+      await notifyError("generate/create WaveSpeed", err);
       return NextResponse.json({ error: "Generation failed" }, { status: 502 });
     }
 
@@ -61,9 +61,8 @@ export async function POST(req: NextRequest) {
       credits: newCredits,
     });
   } catch (err) {
-    // Refund credits on network error
     await updateUserCredits(session.email, GENERATION_COST);
-    console.error("WaveSpeed create error:", err);
+    await notifyError("generate/create", err);
     return NextResponse.json({ error: "Failed to start generation" }, { status: 500 });
   }
 }

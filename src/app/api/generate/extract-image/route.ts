@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
+import { notifyError } from "@/lib/notify";
 
 export async function POST(req: NextRequest) {
   const session = await getSession();
@@ -19,7 +20,6 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    // Use nitter or vxtwitter to extract image via oembed
     const tweetId = tweetMatch[1];
     const vxUrl = `https://api.vxtwitter.com/Twitter/status/${tweetId}`;
     const res = await fetch(vxUrl);
@@ -30,7 +30,6 @@ export async function POST(req: NextRequest) {
 
     const data = await res.json();
 
-    // Extract the first image from media
     const images: string[] = [];
     if (data.media_extended) {
       for (const m of data.media_extended) {
@@ -39,7 +38,6 @@ export async function POST(req: NextRequest) {
         }
       }
     }
-    // Fallback: check mediaURLs
     if (images.length === 0 && data.mediaURLs) {
       images.push(...data.mediaURLs);
     }
@@ -54,7 +52,7 @@ export async function POST(req: NextRequest) {
       author: data.user_name || data.user_screen_name || "",
     });
   } catch (err) {
-    console.error("Extract image error:", err);
+    await notifyError("generate/extract-image", err);
     return NextResponse.json({ error: "Failed to extract image from post" }, { status: 500 });
   }
 }

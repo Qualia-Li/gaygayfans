@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { createMagicToken } from "@/lib/auth";
+import { notifyError } from "@/lib/notify";
 
 export async function POST(req: NextRequest) {
   const { email } = await req.json();
@@ -9,6 +10,7 @@ export async function POST(req: NextRequest) {
   }
 
   if (!process.env.RESEND_API_KEY) {
+    await notifyError("send-link", "RESEND_API_KEY not configured");
     return NextResponse.json({ error: "Email service not configured" }, { status: 503 });
   }
 
@@ -34,7 +36,7 @@ export async function POST(req: NextRequest) {
       `,
     });
   } catch (err) {
-    console.error("Failed to send email:", err);
+    await notifyError("send-link", err);
     return NextResponse.json({ error: "Failed to send email" }, { status: 500 });
   }
 
