@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import type { Scenario } from "@/types/rate";
 import { useRatingStore } from "@/store/ratingStore";
+import { Container, Heading, Text } from "@radix-ui/themes";
 import VideoComparison from "@/components/rate/VideoComparison";
 
 export default function ScenarioDetailPage() {
@@ -15,7 +16,6 @@ export default function ScenarioDetailPage() {
   const reset = useRatingStore((s) => s.reset);
 
   useEffect(() => {
-    // Reset ratings when navigating to a new scenario
     reset();
 
     fetch(`/api/rate/scenarios/${id}`)
@@ -36,7 +36,7 @@ export default function ScenarioDetailPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-black text-white flex items-center justify-center">
-        Loading...
+        <Text color="gray">Loading...</Text>
       </div>
     );
   }
@@ -44,7 +44,7 @@ export default function ScenarioDetailPage() {
   if (error || !scenario) {
     return (
       <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center gap-4">
-        <p className="text-red-400">Scenario not found</p>
+        <Text color="red">Scenario not found</Text>
         <Link href="/rate" className="text-pink-400 hover:underline">
           Back to gallery
         </Link>
@@ -54,16 +54,16 @@ export default function ScenarioDetailPage() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      <div className="max-w-6xl mx-auto px-4 py-8">
+      <Container size="4" className="px-4 py-8">
         <Link
           href="/rate"
-          className="text-gray-400 hover:text-white text-sm mb-4 inline-block"
+          className="text-zinc-400 hover:text-white text-sm mb-4 inline-block"
         >
           &larr; Back to gallery
         </Link>
-        <h1 className="text-2xl font-bold mb-6">{scenario.name}</h1>
+        <Heading size="6" mb="4">{scenario.name}</Heading>
         <VideoComparison scenario={scenario} />
-      </div>
+      </Container>
     </div>
   );
 }

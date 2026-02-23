@@ -1,5 +1,7 @@
 "use client";
 
+import { Button } from "@radix-ui/themes";
+
 interface BestPickerProps {
   selected: boolean;
   onToggle: () => void;
@@ -8,17 +10,15 @@ interface BestPickerProps {
 
 export default function BestPicker({ selected, onToggle, disabled }: BestPickerProps) {
   return (
-    <button
-      type="button"
+    <Button
+      variant={selected ? "solid" : "soft"}
+      color="pink"
+      size="1"
       disabled={disabled}
       onClick={onToggle}
-      className={`px-3 py-1 rounded-full text-sm font-medium transition-all ${
-        selected
-          ? "bg-pink-500 text-white shadow-lg shadow-pink-500/30"
-          : "bg-gray-800 text-gray-400 hover:bg-gray-700"
-      } ${disabled ? "cursor-default opacity-50" : "cursor-pointer"}`}
+      className="cursor-pointer"
     >
       {selected ? "★ Best" : "Best?"}
-    </button>
+    </Button>
   );
 }

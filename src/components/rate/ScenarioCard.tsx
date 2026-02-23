@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { Card, Badge, Text } from "@radix-ui/themes";
 
 interface ScenarioCardProps {
   id: string;
@@ -16,30 +17,31 @@ export default function ScenarioCard({
   variantCount,
 }: ScenarioCardProps) {
   return (
-    <Link
-      href={`/rate/${id}`}
-      className="group block rounded-xl overflow-hidden bg-gray-900 hover:ring-2 hover:ring-pink-500 transition-all"
-    >
-      <div className="aspect-video relative bg-gray-800">
-        {sourceImageUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={sourceImageUrl}
-            alt={name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-gray-600 text-4xl">
-            🎬
+    <Link href={`/rate/${id}`}>
+      <Card className="group !bg-zinc-900 hover:ring-2 hover:ring-pink-500 transition-all overflow-hidden cursor-pointer">
+        <div className="aspect-video relative bg-zinc-800 -m-4 mb-0 rounded-t-lg overflow-hidden">
+          {sourceImageUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={sourceImageUrl}
+              alt={name}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-zinc-600 text-4xl">
+              🎬
+            </div>
+          )}
+          <div className="absolute top-2 right-2">
+            <Badge variant="solid" color="gray" highContrast>
+              {variantCount} variant{variantCount !== 1 ? "s" : ""}
+            </Badge>
           </div>
-        )}
-        <div className="absolute top-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded-full">
-          {variantCount} variant{variantCount !== 1 ? "s" : ""}
         </div>
-      </div>
-      <div className="p-3">
-        <h3 className="text-white text-sm font-medium truncate">{name}</h3>
-      </div>
+        <div className="pt-4">
+          <Text size="2" weight="medium" className="truncate block">{name}</Text>
+        </div>
+      </Card>
     </Link>
   );
 }

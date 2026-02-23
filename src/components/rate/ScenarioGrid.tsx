@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Grid, Text } from "@radix-ui/themes";
 import ScenarioCard from "./ScenarioCard";
 
 interface ScenarioSummary {
@@ -26,25 +27,25 @@ export default function ScenarioGrid() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-20 text-gray-400">
-        Loading scenarios...
+      <div className="flex items-center justify-center py-20">
+        <Text color="gray">Loading scenarios...</Text>
       </div>
     );
   }
 
   if (scenarios.length === 0) {
     return (
-      <div className="flex items-center justify-center py-20 text-gray-400">
-        No scenarios found. Run the seed script first.
+      <div className="flex items-center justify-center py-20">
+        <Text color="gray">No scenarios found. Run the seed script first.</Text>
       </div>
     );
   }
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+    <Grid columns={{ initial: "2", sm: "3", lg: "4" }} gap="4">
       {scenarios.map((s) => (
         <ScenarioCard key={s.id} {...s} />
       ))}
-    </div>
+    </Grid>
   );
 }

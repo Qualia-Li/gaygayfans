@@ -3,6 +3,7 @@
 import { useCallback } from "react";
 import type { Scenario } from "@/types/rate";
 import { useRatingStore, getVisitorId } from "@/store/ratingStore";
+import { Card, Grid, Button, Text, Flex } from "@radix-ui/themes";
 import StarRating from "./StarRating";
 import BestPicker from "./BestPicker";
 
@@ -49,7 +50,7 @@ export default function VideoComparison({ scenario }: VideoComparisonProps) {
       {/* Source image */}
       {scenario.sourceImageUrl && (
         <div className="mb-6">
-          <h3 className="text-gray-400 text-sm mb-2">Source Image</h3>
+          <Text size="2" color="gray" className="mb-2 block">Source Image</Text>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={scenario.sourceImageUrl}
@@ -60,20 +61,17 @@ export default function VideoComparison({ scenario }: VideoComparisonProps) {
       )}
 
       {/* Video variants */}
-      <div
-        className={`grid gap-6 ${
-          scenario.variants.length === 1
-            ? "grid-cols-1 max-w-lg"
-            : scenario.variants.length === 2
-            ? "grid-cols-1 md:grid-cols-2"
-            : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-        }`}
+      <Grid
+        columns={{
+          initial: "1",
+          md: scenario.variants.length === 1 ? "1" : "2",
+          lg: scenario.variants.length > 2 ? "3" : scenario.variants.length === 1 ? "1" : "2",
+        }}
+        gap="4"
+        className={scenario.variants.length === 1 ? "max-w-lg" : ""}
       >
         {scenario.variants.map((variant) => (
-          <div
-            key={variant.id}
-            className="bg-gray-900 rounded-xl overflow-hidden"
-          >
+          <Card key={variant.id} className="!bg-zinc-900 overflow-hidden !p-0">
             <video
               src={variant.videoUrl}
               controls
@@ -82,8 +80,8 @@ export default function VideoComparison({ scenario }: VideoComparisonProps) {
               className="w-full aspect-video object-contain bg-black"
             />
             <div className="p-4 space-y-3">
-              <h4 className="text-white font-medium">{variant.label}</h4>
-              <div className="flex items-center justify-between">
+              <Text weight="medium" size="3">{variant.label}</Text>
+              <Flex align="center" justify="between">
                 <StarRating
                   value={ratings[variant.id] ?? 0}
                   onChange={(stars) => setRating(variant.id, stars)}
@@ -96,32 +94,33 @@ export default function VideoComparison({ scenario }: VideoComparisonProps) {
                   }
                   disabled={submitted}
                 />
-              </div>
+              </Flex>
             </div>
-          </div>
+          </Card>
         ))}
-      </div>
+      </Grid>
 
       {/* Submit */}
-      <div className="mt-8 flex justify-center">
+      <Flex justify="center" className="mt-8">
         {submitted ? (
-          <div className="text-green-400 font-medium text-lg">
+          <Text color="green" weight="medium" size="5">
             Thanks for rating!
-          </div>
+          </Text>
         ) : (
-          <button
+          <Button
+            size="3"
             onClick={handleSubmit}
             disabled={!hasRatings}
-            className={`px-8 py-3 rounded-full font-semibold text-lg transition-all ${
+            className={`cursor-pointer ${
               hasRatings
-                ? "bg-gradient-to-r from-pink-500 to-purple-600 text-white hover:shadow-lg hover:shadow-pink-500/30 cursor-pointer"
-                : "bg-gray-800 text-gray-500 cursor-not-allowed"
+                ? "!bg-gradient-to-r !from-pink-500 !to-purple-600 shadow-lg shadow-pink-500/30"
+                : ""
             }`}
           >
             Submit Ratings
-          </button>
+          </Button>
         )}
-      </div>
+      </Flex>
     </div>
   );
 }

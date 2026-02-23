@@ -1,6 +1,7 @@
 "use client";
 
 import { useAgeGate } from "@/store/ageGate";
+import { Card, Button, Text, Flex, Heading } from "@radix-ui/themes";
 
 export default function AgeGate() {
   const setVerified = useAgeGate((s) => s.setVerified);
@@ -8,75 +9,76 @@ export default function AgeGate() {
   return (
     <main className="fixed inset-0 z-50 overflow-y-auto bg-black">
       <div className="flex min-h-dvh flex-col items-center justify-center py-8">
-      <div className="mx-4 max-w-md w-full rounded-2xl bg-zinc-900 p-8 text-center">
-        <div className="mb-6 text-5xl" aria-hidden="true">🏳️‍🌈</div>
-        <h1 className="mb-2 text-2xl font-bold text-white">
-          Welcome to GayGayFans
-        </h1>
-        <p className="mb-8 text-sm text-zinc-300">
-          Before entering, please confirm the following:
-        </p>
+        <Card size="4" className="mx-4 max-w-md w-full !bg-zinc-900">
+          <Flex direction="column" align="center" gap="4">
+            <Text size="8" aria-hidden="true">🏳️‍🌈</Text>
+            <Heading size="6" align="center">Welcome to GayGayFans</Heading>
+            <Text size="2" color="gray" align="center">
+              Before entering, please confirm the following:
+            </Text>
 
-        <div className="mb-8 space-y-4 text-left" role="list">
-          <div className="flex items-start gap-3 rounded-xl bg-zinc-800 p-4" role="listitem">
-            <span className="mt-0.5 text-lg" aria-hidden="true">🔞</span>
-            <div>
-              <p className="font-medium text-white">I am 18 years or older</p>
-              <p className="text-xs text-zinc-300">
-                This site contains adult-oriented content intended for mature
-                audiences only.
-              </p>
-            </div>
-          </div>
+            <Flex direction="column" gap="3" className="w-full" role="list">
+              <Card className="!bg-zinc-800" role="listitem">
+                <Flex gap="3" align="start">
+                  <Text size="4" className="mt-0.5" aria-hidden="true">🔞</Text>
+                  <div>
+                    <Text as="p" weight="medium" size="2">I am 18 years or older</Text>
+                    <Text as="p" size="1" color="gray">
+                      This site contains adult-oriented content intended for mature audiences only.
+                    </Text>
+                  </div>
+                </Flex>
+              </Card>
 
-          <div className="flex items-start gap-3 rounded-xl bg-zinc-800 p-4" role="listitem">
-            <span className="mt-0.5 text-lg" aria-hidden="true">🏳️‍🌈</span>
-            <div>
-              <p className="font-medium text-white">
-                I want to view gay content
-              </p>
-              <p className="text-xs text-zinc-300">
-                This site features adult content created for and by gay men.
-              </p>
-            </div>
-          </div>
+              <Card className="!bg-zinc-800" role="listitem">
+                <Flex gap="3" align="start">
+                  <Text size="4" className="mt-0.5" aria-hidden="true">🏳️‍🌈</Text>
+                  <div>
+                    <Text as="p" weight="medium" size="2">I want to view gay content</Text>
+                    <Text as="p" size="1" color="gray">
+                      This site features adult content created for and by gay men.
+                    </Text>
+                  </div>
+                </Flex>
+              </Card>
 
-          <div className="flex items-start gap-3 rounded-xl bg-zinc-800 p-4" role="listitem">
-            <span className="mt-0.5 text-lg" aria-hidden="true">🌍</span>
-            <div>
-              <p className="font-medium text-white">
-                My location allows me to view this content
-              </p>
-              <p className="text-xs text-zinc-300">
-                You are responsible for ensuring that accessing this content is
-                legal in your jurisdiction.
-              </p>
-            </div>
-          </div>
-        </div>
+              <Card className="!bg-zinc-800" role="listitem">
+                <Flex gap="3" align="start">
+                  <Text size="4" className="mt-0.5" aria-hidden="true">🌍</Text>
+                  <div>
+                    <Text as="p" weight="medium" size="2">My location allows me to view this content</Text>
+                    <Text as="p" size="1" color="gray">
+                      You are responsible for ensuring that accessing this content is legal in your jurisdiction.
+                    </Text>
+                  </div>
+                </Flex>
+              </Card>
+            </Flex>
 
-        <button
-          onClick={() => setVerified(true)}
-          className="w-full rounded-full bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500 py-3 font-semibold text-white transition-transform hover:scale-105 active:scale-95"
-        >
-          I Confirm All of the Above — Enter
-        </button>
+            <Button
+              size="3"
+              className="w-full cursor-pointer !bg-gradient-to-r !from-pink-500 !via-purple-500 !to-blue-500"
+              onClick={() => setVerified(true)}
+            >
+              I Confirm All of the Above — Enter
+            </Button>
 
-        <a
-          href="https://google.com"
-          className="mt-4 block text-sm text-zinc-400 hover:text-zinc-200 transition-colors"
-        >
-          No, take me away
-        </a>
-      </div>
+            <a
+              href="https://google.com"
+              className="text-sm text-zinc-400 hover:text-zinc-200 transition-colors"
+            >
+              No, take me away
+            </a>
+          </Flex>
+        </Card>
 
-      <div className="mt-6 flex flex-wrap justify-center gap-3 text-xs text-zinc-500">
-        <a href="/about">About</a>
-        <a href="/privacy">Privacy</a>
-        <a href="/terms">Terms</a>
-        <a href="/content-policy">Content Policy</a>
-        <a href="/contact">Contact</a>
-      </div>
+        <Flex wrap="wrap" justify="center" gap="3" className="mt-6 text-xs text-zinc-500">
+          <a href="/about">About</a>
+          <a href="/privacy">Privacy</a>
+          <a href="/terms">Terms</a>
+          <a href="/content-policy">Content Policy</a>
+          <a href="/contact">Contact</a>
+        </Flex>
       </div>
     </main>
   );
