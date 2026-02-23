@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { redis } from "@/lib/redis";
+import { getRedis } from "@/lib/redis";
 import scenarios from "@/data/scenarios.json";
 import type { Scenario, RatingSubmission, AggregatedScenarioResult, AggregatedVariantResult } from "@/types/rate";
 
@@ -26,11 +26,11 @@ export async function GET() {
   const results: AggregatedScenarioResult[] = [];
 
   for (const scenario of scenarios as Scenario[]) {
-    const keys = await redis.smembers(`submissions:${scenario.id}`);
+    const keys = await getRedis().smembers(`submissions:${scenario.id}`);
     const submissions: RatingSubmission[] = [];
 
     for (const key of keys) {
-      const data = await redis.get<string>(key);
+      const data = await getRedis().get<string>(key);
       if (data) {
         submissions.push(
           typeof data === "string" ? JSON.parse(data) : data
