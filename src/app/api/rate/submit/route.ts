@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getRedis } from "@/lib/redis";
+import { getSession, incrementUserRating } from "@/lib/auth";
 import type { RatingSubmission } from "@/types/rate";
 
 export async function POST(req: NextRequest) {
@@ -19,5 +20,15 @@ export async function POST(req: NextRequest) {
   // Track all scenario IDs that have submissions
   await getRedis().sadd("rated-scenarios", body.scenarioId);
 
-  return NextResponse.json({ ok: true });
+  // If user is logged in, increment their credits and ratings count
+  let credits: number | undefined;
+  let ratingsCount: number | undefined;
+  const session = await getSession();
+  if (session?.email) {
+    const result = await incrementUserRating(session.email);
+    credits = result.credits;
+    ratingsCount = result.ratingsCount;
+  }
+
+  return NextResponse.json({ ok: true, credits, ratingsCount });
 }

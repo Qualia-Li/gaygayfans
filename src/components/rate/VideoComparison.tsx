@@ -3,7 +3,8 @@
 import { useCallback } from "react";
 import type { Scenario } from "@/types/rate";
 import { useRatingStore, getVisitorId } from "@/store/ratingStore";
-import { Card, Grid, Button, Text, Flex } from "@radix-ui/themes";
+import { useAuthStore } from "@/store/authStore";
+import { Card, Grid, Button, Text, Flex, Callout } from "@radix-ui/themes";
 import StarRating from "./StarRating";
 import BestPicker from "./BestPicker";
 
@@ -14,6 +15,7 @@ interface VideoComparisonProps {
 export default function VideoComparison({ scenario }: VideoComparisonProps) {
   const { ratings, bestVariantId, submitted, setRating, setBest, setSubmitted } =
     useRatingStore();
+  const { isLoggedIn, setCredits, incrementRatingsCount } = useAuthStore();
 
   const handleSubmit = useCallback(async () => {
     const visitorId = getVisitorId();
@@ -37,11 +39,16 @@ export default function VideoComparison({ scenario }: VideoComparisonProps) {
       });
       if (res.ok) {
         setSubmitted(true);
+        const data = await res.json();
+        if (data.credits !== undefined) {
+          setCredits(data.credits);
+          incrementRatingsCount();
+        }
       }
     } catch (err) {
       console.error("Submit failed:", err);
     }
-  }, [ratings, bestVariantId, scenario.id, setSubmitted]);
+  }, [ratings, bestVariantId, scenario.id, setSubmitted, setCredits, incrementRatingsCount]);
 
   const hasRatings = Object.keys(ratings).length > 0;
 
@@ -100,11 +107,18 @@ export default function VideoComparison({ scenario }: VideoComparisonProps) {
       </Grid>
 
       {/* Submit */}
-      <Flex justify="center" className="mt-8">
+      <Flex direction="column" align="center" gap="3" className="mt-8">
         {submitted ? (
-          <Text color="green" weight="medium" size="5">
-            Thanks for rating!
-          </Text>
+          <Flex direction="column" align="center" gap="2">
+            <Text color="green" weight="medium" size="5">
+              Thanks for rating!
+            </Text>
+            {isLoggedIn && (
+              <Callout.Root color="pink" variant="soft" size="1">
+                <Callout.Text>⚡ +1 credit earned!</Callout.Text>
+              </Callout.Root>
+            )}
+          </Flex>
         ) : (
           <Button
             size="3"
