@@ -11,11 +11,15 @@ export async function createMagicToken(email: string): Promise<string> {
 }
 
 export async function verifyMagicToken(token: string): Promise<string | null> {
-  const data = await getRedis().get<string>(`magic:${token}`);
+  // Atomic get-and-delete to prevent token replay attacks
+  const redis = getRedis();
+  const key = `magic:${token}`;
+  const pipeline = redis.pipeline();
+  pipeline.get<string>(key);
+  pipeline.del(key);
+  const [data] = await pipeline.exec<[string | null, number]>();
   if (!data) return null;
   const parsed = typeof data === "string" ? JSON.parse(data) : data;
-  // Delete token after use (one-time)
-  await getRedis().del(`magic:${token}`);
   return parsed.email;
 }
 
@@ -27,15 +31,12 @@ export async function createSession(email: string): Promise<string> {
     { ex: SESSION_TTL }
   );
 
-  // Ensure user record exists
+  // Ensure user record exists (SETNX — only set if not exists)
   const userKey = `user:${email}`;
-  const existing = await getRedis().get(userKey);
-  if (!existing) {
-    await getRedis().set(
-      userKey,
-      JSON.stringify({ credits: 0, ratingsCount: 0, createdAt: Date.now() })
-    );
-  }
+  await getRedis().setnx(
+    userKey,
+    JSON.stringify({ credits: 0, ratingsCount: 0, createdAt: Date.now() })
+  );
 
   const cookieStore = await cookies();
   cookieStore.set("ggf-session", sessionId, {
@@ -76,23 +77,38 @@ export async function getUser(email: string): Promise<{ credits: number; ratings
 }
 
 export async function updateUserCredits(email: string, delta: number): Promise<number> {
-  const user = await getUser(email);
-  const newCredits = Math.max(0, (user?.credits ?? 0) + delta);
+  // Use Lua script for atomic check-and-update
+  const redis = getRedis();
   const userKey = `user:${email}`;
-  const existing = await getRedis().get<string>(userKey);
-  const parsed = existing ? (typeof existing === "string" ? JSON.parse(existing) : existing) : { createdAt: Date.now() };
-  await getRedis().set(userKey, JSON.stringify({ ...parsed, credits: newCredits }));
-  return newCredits;
+  const script = `
+    local data = redis.call('GET', KEYS[1])
+    if not data then return -1 end
+    local user = cjson.decode(data)
+    local newCredits = (user.credits or 0) + tonumber(ARGV[1])
+    if newCredits < 0 then return -2 end
+    user.credits = newCredits
+    redis.call('SET', KEYS[1], cjson.encode(user))
+    return newCredits
+  `;
+  const result = await redis.eval(script, [userKey], [String(delta)]) as number;
+  if (result === -1) return 0; // user not found
+  if (result === -2) return 0; // insufficient credits
+  return result;
 }
 
 export async function incrementUserRating(email: string): Promise<{ credits: number; ratingsCount: number }> {
+  // Atomic increment via Lua script
+  const redis = getRedis();
   const userKey = `user:${email}`;
-  const existing = await getRedis().get<string>(userKey);
-  const parsed = existing
-    ? (typeof existing === "string" ? JSON.parse(existing) : existing)
-    : { credits: 0, ratingsCount: 0, createdAt: Date.now() };
-  parsed.credits = (parsed.credits ?? 0) + 1;
-  parsed.ratingsCount = (parsed.ratingsCount ?? 0) + 1;
-  await getRedis().set(userKey, JSON.stringify(parsed));
-  return { credits: parsed.credits, ratingsCount: parsed.ratingsCount };
+  const script = `
+    local data = redis.call('GET', KEYS[1])
+    if not data then return {0, 0} end
+    local user = cjson.decode(data)
+    user.credits = (user.credits or 0) + 1
+    user.ratingsCount = (user.ratingsCount or 0) + 1
+    redis.call('SET', KEYS[1], cjson.encode(user))
+    return {user.credits, user.ratingsCount}
+  `;
+  const result = await redis.eval(script, [userKey], []) as [number, number];
+  return { credits: result[0], ratingsCount: result[1] };
 }

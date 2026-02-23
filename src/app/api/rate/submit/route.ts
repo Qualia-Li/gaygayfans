@@ -10,25 +10,37 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid submission" }, { status: 400 });
   }
 
-  // Store submission keyed by scenario:visitor for idempotency
+  const redis = getRedis();
   const key = `rating:${body.scenarioId}:${body.visitorId}`;
-  await getRedis().set(key, JSON.stringify(body));
+
+  // Check if this is a new submission (not a re-submit)
+  const existing = await redis.get(key);
+  const isNew = !existing;
+
+  // Store submission keyed by scenario:visitor for idempotency
+  await redis.set(key, JSON.stringify(body));
 
   // Also add to a set of all submission keys for this scenario
-  await getRedis().sadd(`submissions:${body.scenarioId}`, key);
+  await redis.sadd(`submissions:${body.scenarioId}`, key);
 
   // Track all scenario IDs that have submissions
-  await getRedis().sadd("rated-scenarios", body.scenarioId);
+  await redis.sadd("rated-scenarios", body.scenarioId);
 
-  // If user is logged in, increment their credits and ratings count
+  // Only increment credits for NEW ratings (prevent credit farming)
   let credits: number | undefined;
   let ratingsCount: number | undefined;
   const session = await getSession();
-  if (session?.email) {
+  if (session?.email && isNew) {
     const result = await incrementUserRating(session.email);
     credits = result.credits;
     ratingsCount = result.ratingsCount;
+  } else if (session?.email) {
+    // Return current values without incrementing
+    const { getUser } = await import("@/lib/auth");
+    const user = await getUser(session.email);
+    credits = user?.credits;
+    ratingsCount = user?.ratingsCount;
   }
 
-  return NextResponse.json({ ok: true, credits, ratingsCount });
+  return NextResponse.json({ ok: true, credits, ratingsCount, isNew });
 }
