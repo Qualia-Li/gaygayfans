@@ -69,13 +69,20 @@ export default function GenerationStatus({ requestId, onReset }: GenerationStatu
         {videoUrl && (
           <>
             <Heading size="4" color="green">Video Ready!</Heading>
-            <video
-              src={videoUrl}
-              controls
-              loop
-              playsInline
-              className="w-full max-w-lg rounded-lg aspect-[4/3] object-contain bg-black"
-            />
+            <div className="relative w-full max-w-lg">
+              <video
+                src={videoUrl}
+                controls
+                loop
+                playsInline
+                className="w-full rounded-lg aspect-[4/3] object-contain bg-black"
+              />
+              <div className="absolute bottom-8 left-0 right-0 text-center pointer-events-none">
+                <span className="text-white/70 text-sm font-bold tracking-wider drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                  GaylyFans.com
+                </span>
+              </div>
+            </div>
             <Flex gap="3">
               <a href={videoUrl} download target="_blank" rel="noopener noreferrer">
                 <Button variant="soft" className="cursor-pointer">Download</Button>
