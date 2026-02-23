@@ -68,8 +68,9 @@ export async function GET() {
         variantId: v.id,
         label: v.label,
         videoUrl: v.videoUrl,
-        originalFilename: meta?.originalFilename ?? "unknown",
-        loraConfig: meta?.loraConfig ?? "unknown",
+        // Keep internal metadata server-side only
+        originalFilename: "",
+        loraConfig: "",
         avgStars:
           variantRatings.length > 0
             ? variantRatings.reduce((sum, r) => sum + r.stars, 0) /

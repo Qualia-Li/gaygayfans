@@ -106,9 +106,6 @@ export default function ResultsPage() {
                         <Text size="1" color="gray">{v.totalRatings} ratings</Text>
                         <Text size="1" color="gray">{v.bestPicks} best picks</Text>
                       </Flex>
-                      <Text size="1" color="gray" className="truncate">
-                        LoRA: {v.loraConfig}
-                      </Text>
                     </Flex>
                   </Card>
                 ))}
