@@ -8,6 +8,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid email" }, { status: 400 });
   }
 
+  if (!process.env.RESEND_API_KEY) {
+    return NextResponse.json({ error: "Email service not configured" }, { status: 503 });
+  }
+
   const token = await createMagicToken(email);
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://gaylyfans.com";
   const magicLink = `${baseUrl}/auth/verify?token=${token}`;
