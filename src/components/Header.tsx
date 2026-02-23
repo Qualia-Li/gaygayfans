@@ -3,12 +3,19 @@
 import Link from "next/link";
 import { Flex, Text, Button, Badge } from "@radix-ui/themes";
 import { useAuthStore } from "@/store/authStore";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import AuthModal from "./AuthModal";
 
 export default function Header() {
   const { email, isLoggedIn, credits, setAuth, logout } = useAuthStore();
   const [showAuth, setShowAuth] = useState(false);
+  const [starHover, setStarHover] = useState(0);
+  const router = useRouter();
+
+  const handleStarClick = useCallback(() => {
+    router.push("/rate");
+  }, [router]);
 
   // Check session on mount
   useEffect(() => {
@@ -44,15 +51,26 @@ export default function Header() {
                 ⚡ {credits} credits
               </Badge>
             )}
-            <Link href="/rate">
-              <Button
-                variant="solid"
-                size="2"
-                className="cursor-pointer bg-gradient-to-r from-pink-500 to-purple-600 shadow-lg shadow-pink-500/30"
-              >
-                Rate
-              </Button>
-            </Link>
+            <div
+              className="flex gap-0.5 cursor-pointer drop-shadow-lg"
+              onClick={handleStarClick}
+              title="Rate Videos"
+            >
+              {[1, 2, 3, 4, 5].map((star) => (
+                <span
+                  key={star}
+                  className={`text-xl transition-all duration-150 ${
+                    star <= starHover
+                      ? "text-yellow-400 scale-125"
+                      : "text-white/40 hover:text-yellow-300"
+                  }`}
+                  onMouseEnter={() => setStarHover(star)}
+                  onMouseLeave={() => setStarHover(0)}
+                >
+                  ★
+                </span>
+              ))}
+            </div>
             <Link href="/generate">
               <Button variant="soft" size="2" color="pink" className="cursor-pointer">
                 Generate
