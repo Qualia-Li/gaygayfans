@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import { Theme } from "@radix-ui/themes";
 import ErrorReporter from "@/components/ErrorReporter";
+import WeChatBlocker from "@/components/WeChatBlocker";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -63,6 +64,7 @@ export default function RootLayout({
       <body className={`${geistSans.variable} antialiased bg-black`}>
         <Theme appearance="dark" accentColor="orange" grayColor="slate" radius="large">
           <ErrorReporter />
+          <WeChatBlocker />
           {children}
         </Theme>
       </body>
