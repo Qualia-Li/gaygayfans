@@ -72,10 +72,8 @@ export default function Header() {
       <div className="pointer-events-none fixed top-0 inset-x-0 z-40 px-4 pt-3 pb-2">
         <Flex align="center" justify="between" className="pointer-events-auto">
           <Flex align="center" gap="2">
-            <Text size="4">🏳️‍🌈</Text>
-            <Text size="4" weight="bold" className="text-white drop-shadow-lg">
-              GaylyFans
-            </Text>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo-gooey.png" alt="GaylyFans" className="h-8 w-auto drop-shadow-lg" />
           </Flex>
 
           <Flex align="center" gap="3">
