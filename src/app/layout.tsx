@@ -9,12 +9,12 @@ const geistSans = Geist({
   subsets: ["latin"],
 });
 
-const siteUrl = "https://gaylyfans.com";
+const siteUrl = "https://www.gaylyfans.com";
 
 export const metadata: Metadata = {
-  title: "GaylyFans — Gay Video Feed | Adult Content for Gay Men",
+  title: "GaylyFans — The Gay Community Platform | Video, Rate & Create",
   description:
-    "GaylyFans is a TikTok-style vertical video feed with curated gay adult content from verified creators. Safe, legal, community-driven. 18+ only.",
+    "GaylyFans is a vibrant LGBT community platform where gay men discover curated video content, rate and compare scenes, and create AI-powered videos. Join a safe, inclusive, community-driven space. 18+ only.",
   metadataBase: new URL(siteUrl),
   alternates: {
     canonical: "/",
@@ -25,9 +25,9 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
-    title: "GaylyFans — Gay Video Feed",
+    title: "GaylyFans — The Gay Community Platform",
     description:
-      "A TikTok-style vertical video feed featuring curated gay adult content from verified creators. 18+ only.",
+      "A vibrant LGBT community where gay men discover curated content, rate scenes, and create AI-powered videos. Safe, inclusive, community-driven. 18+ only.",
     url: siteUrl,
     siteName: "GaylyFans",
     locale: "en_US",
@@ -36,15 +36,15 @@ export const metadata: Metadata = {
         url: "/og-image.png",
         width: 1536,
         height: 1024,
-        alt: "GaylyFans — Gay Video Feed • 18+",
+        alt: "GaylyFans — The Gay Community Platform • 18+",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "GaylyFans — Gay Video Feed",
+    title: "GaylyFans — The Gay Community Platform",
     description:
-      "A TikTok-style vertical video feed featuring curated gay adult content from verified creators. 18+ only.",
+      "A vibrant LGBT community where gay men discover curated content, rate scenes, and create AI-powered videos. Safe, inclusive, community-driven. 18+ only.",
     images: ["/og-image.png"],
   },
   robots: {
