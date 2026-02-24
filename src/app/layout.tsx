@@ -13,9 +13,9 @@ const geistSans = Geist({
 const siteUrl = "https://www.gaylyfans.com";
 
 export const metadata: Metadata = {
-  title: "GaylyFans — The Gay Community Platform | Video, Rate & Create",
+  title: "GaylyFans — The Gay Community Platform",
   description:
-    "GaylyFans is a vibrant LGBT community platform where gay men discover curated video content, rate and compare scenes, and create AI-powered videos. Join a safe, inclusive, community-driven space. 18+ only.",
+    "GaylyFans is an LGBT community platform where gay men discover curated video content and create AI-powered videos. Safe, inclusive. 18+ only.",
   metadataBase: new URL(siteUrl),
   alternates: {
     canonical: "/",
@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     type: "website",
     title: "GaylyFans — The Gay Community Platform",
     description:
-      "A vibrant LGBT community where gay men discover curated content, rate scenes, and create AI-powered videos. Safe, inclusive, community-driven. 18+ only.",
+      "An LGBT community where gay men discover curated video content and create AI-powered videos. Safe, inclusive. 18+ only.",
     url: siteUrl,
     siteName: "GaylyFans",
     locale: "en_US",
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "GaylyFans — The Gay Community Platform",
     description:
-      "A vibrant LGBT community where gay men discover curated content, rate scenes, and create AI-powered videos. Safe, inclusive, community-driven. 18+ only.",
+      "An LGBT community where gay men discover curated video content and create AI-powered videos. Safe, inclusive. 18+ only.",
     images: ["/og-image.png"],
   },
   robots: {
