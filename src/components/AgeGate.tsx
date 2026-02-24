@@ -48,7 +48,7 @@ export default function AgeGate() {
         <Card size="4" className="mx-4 max-w-md w-full !bg-zinc-900">
           <Flex direction="column" align="center" gap="4">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/logo-gooey.png" alt="GaylyFans" className="h-16 w-auto" />
+            <img src="/logo-gooey.png" alt="GaylyFans" className="h-24 w-auto" />
             <Heading size="5" align="center">Welcome</Heading>
             <Text size="2" color="gray" align="center">
               Before entering, please confirm the following:
