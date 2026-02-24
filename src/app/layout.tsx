@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Geist } from "next/font/google";
 import { Theme } from "@radix-ui/themes";
 import ErrorReporter from "@/components/ErrorReporter";
@@ -61,6 +62,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-7HG4S5KSWC" strategy="afterInteractive" />
+        <Script id="ga4" strategy="afterInteractive">{`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-7HG4S5KSWC');
+        `}</Script>
+      </head>
       <body className={`${geistSans.variable} antialiased bg-black`}>
         <Theme appearance="dark" accentColor="orange" grayColor="slate" radius="large">
           <ErrorReporter />
