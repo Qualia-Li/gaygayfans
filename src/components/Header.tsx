@@ -12,12 +12,11 @@ export default function Header() {
   const currentVideoId = useFeedStore((s) => s.currentVideoId);
   const [showAuth, setShowAuth] = useState(false);
   const [starHover, setStarHover] = useState(0);
-  const [rated, setRated] = useState<number>(0);
+  const [ratedMap, setRatedMap] = useState<Record<string, number>>({});
   const [submitting, setSubmitting] = useState(false);
 
-  // Reset rating when video changes
+  // Reset hover when video changes
   useEffect(() => {
-    setRated(0);
     setStarHover(0);
   }, [currentVideoId]);
 
@@ -33,9 +32,14 @@ export default function Header() {
       .catch(() => {});
   }, [setAuth]);
 
+  // Strip infinite-scroll suffix for API calls
+  const originalVideoId = currentVideoId?.replace(/-\d+$/, "") ?? null;
+
+  const rated = originalVideoId ? (ratedMap[originalVideoId] ?? 0) : 0;
+
   const handleStarClick = useCallback(async (stars: number) => {
-    if (!currentVideoId || submitting || rated > 0) return;
-    setRated(stars);
+    if (!originalVideoId || submitting || rated > 0) return;
+    setRatedMap((m) => ({ ...m, [originalVideoId]: stars }));
     setSubmitting(true);
 
     try {
@@ -43,9 +47,9 @@ export default function Header() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          scenarioId: currentVideoId,
+          scenarioId: originalVideoId,
           visitorId: "anon",
-          ratings: [{ variantId: currentVideoId, stars }],
+          ratings: [{ variantId: originalVideoId, stars }],
         }),
       });
       if (res.ok) {
@@ -60,7 +64,7 @@ export default function Header() {
     } finally {
       setSubmitting(false);
     }
-  }, [currentVideoId, submitting, rated, incrementCredits, incrementRatingsCount]);
+  }, [originalVideoId, submitting, rated, incrementCredits, incrementRatingsCount]);
 
   const handleLogout = async () => {
     await fetch("/api/auth/logout", { method: "POST" });
@@ -73,7 +77,7 @@ export default function Header() {
         <Flex align="center" justify="between" className="pointer-events-auto">
           <Flex align="center" gap="2">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/logo-gooey.png" alt="GaylyFans" className="h-8 w-auto drop-shadow-lg" />
+            <img src="/logo-gooey.png" alt="GaylyFans" className="h-12 w-auto drop-shadow-lg" />
           </Flex>
 
           <Flex align="center" gap="3">
