@@ -22,19 +22,25 @@ function VerifyContent() {
 
     fetch(`/api/auth/verify?token=${token}`)
       .then(async (res) => {
+        const text = await res.text();
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch {
+          throw new Error("Invalid response from server");
+        }
         if (!res.ok) {
-          const data = await res.json();
           throw new Error(data.error || "Verification failed");
         }
-        return res.json();
+        return data;
       })
       .then((data) => {
         setAuth(data.email, 0, 0);
         setStatus("success");
         fetch("/api/auth/me")
-          .then((r) => r.json())
+          .then((r) => r.ok ? r.json() : null)
           .then((user) => {
-            if (user.email) {
+            if (user?.email) {
               setAuth(user.email, user.credits ?? 0, user.ratingsCount ?? 0);
             }
           })
