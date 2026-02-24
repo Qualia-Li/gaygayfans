@@ -16,8 +16,8 @@ export async function POST(req: NextRequest) {
     }
 
     const token = await createMagicToken(email);
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://www.gaylyfans.com";
-    const magicLink = `${baseUrl}/auth/verify?token=${token}`;
+    const origin = req.headers.get("origin") || req.nextUrl.origin || "https://www.gaylyfans.com";
+    const magicLink = `${origin}/auth/verify?token=${token}`;
 
     const resend = new Resend(process.env.RESEND_API_KEY);
     const { error: sendError } = await resend.emails.send({
