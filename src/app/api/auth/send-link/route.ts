@@ -46,6 +46,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true });
   } catch (err) {
     await notifyError("send-link", err);
-    return NextResponse.json({ error: "Failed to send magic link" }, { status: 500 });
+    const msg = err instanceof Error ? err.message : String(err);
+    return NextResponse.json({ error: `Failed to send magic link: ${msg}` }, { status: 500 });
   }
 }
