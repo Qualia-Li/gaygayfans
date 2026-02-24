@@ -30,8 +30,10 @@ export default function AuthModal({ open, onOpenChange }: AuthModalProps) {
         body: JSON.stringify({ email }),
       });
       if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || "Failed to send");
+        const text = await res.text();
+        let msg = "Failed to send";
+        try { msg = JSON.parse(text).error || msg; } catch { /* non-JSON response */ }
+        throw new Error(msg);
       }
       setSent(true);
     } catch (err) {
