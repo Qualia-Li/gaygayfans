@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useCallback } from "react";
 
-export function useVideoAutoplay() {
+export function useVideoAutoplay(onVisible?: () => void) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -18,6 +18,7 @@ export function useVideoAutoplay() {
 
           if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
             video.play().catch(() => {});
+            onVisible?.();
           } else {
             video.pause();
           }
