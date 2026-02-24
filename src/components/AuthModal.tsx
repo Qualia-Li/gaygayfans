@@ -86,8 +86,8 @@ export default function AuthModal({ open, onOpenChange }: AuthModalProps) {
             <Text size="2" color="gray" align="center">
               We sent a magic link to <strong>{email}</strong>. Click it to sign in.
             </Text>
-            <Button variant="soft" color="gray" onClick={checkAuth} className="cursor-pointer">
-              I&apos;ve clicked the link
+            <Button onClick={() => { setSent(false); setError(null); }} className="cursor-pointer">
+              Send Again
             </Button>
           </Flex>
         ) : (
