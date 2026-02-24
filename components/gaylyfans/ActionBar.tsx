@@ -137,30 +137,36 @@ export default function ActionBar({ videos }: { videos: FeedVideo[] }) {
       setLikeCountMap((m) => ({ ...m, [originalId]: result.newCount }));
       if (result.liked !== !wasLiked) {
         // Server disagrees with our optimistic state, correct it
-        const correctedSet = new Set(likedSet);
-        if (result.liked) {
-          correctedSet.add(originalId);
-        } else {
-          correctedSet.delete(originalId);
-        }
-        setLikedSet(correctedSet);
-        storeSet(LIKES_KEY, correctedSet);
+        setLikedSet((prev) => {
+          const correctedSet = new Set(prev);
+          if (result.liked) {
+            correctedSet.add(originalId);
+          } else {
+            correctedSet.delete(originalId);
+          }
+          storeSet(LIKES_KEY, correctedSet);
+          return correctedSet;
+        });
       }
     } catch {
       // Revert optimistic update on failure
-      const revertedSet = new Set(likedSet);
-      if (wasLiked) {
-        revertedSet.add(originalId);
-      } else {
-        revertedSet.delete(originalId);
-      }
-      setLikedSet(revertedSet);
-      storeSet(LIKES_KEY, revertedSet);
+      setLikedSet((prev) => {
+        const revertedSet = new Set(prev);
+        if (wasLiked) {
+          revertedSet.add(originalId);
+        } else {
+          revertedSet.delete(originalId);
+        }
+        storeSet(LIKES_KEY, revertedSet);
+        return revertedSet;
+      });
       setLikeCountMap((m) => ({ ...m, [originalId]: video.likes }));
     }
   };
 
   const handleReport = async (reason: string) => {
+    if (isAiGenerated) return; // Can't report AI-generated videos (no DB row)
+
     setShowReport(false);
     const newSet = new Set(reportedSet);
     newSet.add(originalId);

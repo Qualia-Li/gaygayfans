@@ -7,6 +7,8 @@ import type { FeedVideo } from '@/types/gaylyfans'
 
 export type SortBy = 'latest' | 'trending' | 'random'
 
+const MAX_LIKE_BATCH = 100
+
 export async function getFeedVideos(
   sortBy: SortBy = 'latest'
 ): Promise<FeedVideo[]> {
@@ -16,6 +18,8 @@ export async function getFeedVideos(
       orderClause = desc(feedVideos.likes)
       break
     case 'random':
+      orderClause = sql`RANDOM()`
+      break
     case 'latest':
     default:
       orderClause = desc(feedVideos.createdAt)
@@ -43,11 +47,17 @@ export async function getFeedVideos(
 
 /**
  * Get real like counts for multiple videos from the videoLikes table.
+ * Capped to MAX_LIKE_BATCH to prevent unbounded IN queries.
  */
 export async function getLikeCounts(
   videoIds: number[]
 ): Promise<Record<number, number>> {
-  if (videoIds.length === 0) return {}
+  // Validate: only positive integers, capped to batch size
+  const validIds = videoIds
+    .filter((id) => Number.isInteger(id) && id > 0)
+    .slice(0, MAX_LIKE_BATCH)
+
+  if (validIds.length === 0) return {}
 
   const rows = await db
     .select({
@@ -55,7 +65,7 @@ export async function getLikeCounts(
       count: sql<number>`count(*)::int`,
     })
     .from(videoLikes)
-    .where(inArray(videoLikes.videoId, videoIds))
+    .where(inArray(videoLikes.videoId, validIds))
     .groupBy(videoLikes.videoId)
 
   const result: Record<number, number> = {}
@@ -74,13 +84,19 @@ export async function getVisitorLikes(
 ): Promise<number[]> {
   if (!visitorId || videoIds.length === 0) return []
 
+  const validIds = videoIds
+    .filter((id) => Number.isInteger(id) && id > 0)
+    .slice(0, MAX_LIKE_BATCH)
+
+  if (validIds.length === 0) return []
+
   const rows = await db
     .select({ videoId: videoLikes.videoId })
     .from(videoLikes)
     .where(
       and(
         eq(videoLikes.visitorId, visitorId),
-        inArray(videoLikes.videoId, videoIds)
+        inArray(videoLikes.videoId, validIds)
       )
     )
 
@@ -89,40 +105,52 @@ export async function getVisitorLikes(
 
 /**
  * Toggle like for a video. Returns the new liked state and updated count.
- * Also syncs the denormalized likes counter on feedVideos.
+ * Uses a transaction to ensure atomicity of like toggle + counter sync.
+ * Validates inputs to prevent spoofed likes.
  */
 export async function toggleLike(
   videoId: number,
   visitorId: string
 ): Promise<{ liked: boolean; newCount: number }> {
-  // Check if already liked
-  const existing = await db
-    .select()
-    .from(videoLikes)
-    .where(and(eq(videoLikes.videoId, videoId), eq(videoLikes.visitorId, visitorId)))
-    .limit(1)
-
-  if (existing.length > 0) {
-    await db.delete(videoLikes).where(eq(videoLikes.id, existing[0].id))
-  } else {
-    await db.insert(videoLikes).values({ videoId, visitorId })
+  // Input validation
+  if (!Number.isInteger(videoId) || videoId <= 0) {
+    throw new Error('Invalid video ID')
+  }
+  if (!visitorId || typeof visitorId !== 'string' || visitorId.length > 128) {
+    throw new Error('Invalid visitor ID')
   }
 
-  // Get updated count
-  const [countRow] = await db
-    .select({ count: sql<number>`count(*)::int` })
-    .from(videoLikes)
-    .where(eq(videoLikes.videoId, videoId))
+  return await db.transaction(async (tx) => {
+    // Check if already liked
+    const existing = await tx
+      .select({ id: videoLikes.id })
+      .from(videoLikes)
+      .where(and(eq(videoLikes.videoId, videoId), eq(videoLikes.visitorId, visitorId)))
+      .limit(1)
 
-  const newCount = countRow?.count ?? 0
+    const wasLiked = existing.length > 0
 
-  // Sync denormalized counter
-  await db
-    .update(feedVideos)
-    .set({ likes: newCount })
-    .where(eq(feedVideos.id, videoId))
+    if (wasLiked) {
+      await tx.delete(videoLikes).where(eq(videoLikes.id, existing[0].id))
+    } else {
+      await tx.insert(videoLikes).values({ videoId, visitorId })
+    }
 
-  return { liked: existing.length === 0, newCount }
+    // Get updated count and sync denormalized counter atomically
+    const [countRow] = await tx
+      .select({ count: sql<number>`count(*)::int` })
+      .from(videoLikes)
+      .where(eq(videoLikes.videoId, videoId))
+
+    const newCount = countRow?.count ?? 0
+
+    await tx
+      .update(feedVideos)
+      .set({ likes: newCount })
+      .where(eq(feedVideos.id, videoId))
+
+    return { liked: !wasLiked, newCount }
+  })
 }
 
 /**
@@ -164,6 +192,11 @@ export async function submitReport(
   detail?: string,
   userAgent?: string
 ) {
+  // Validate: only real videos (positive IDs) can be reported
+  if (!Number.isInteger(videoId) || videoId <= 0) {
+    return { ok: false, error: 'Cannot report this video' }
+  }
+
   await db.insert(reports).values({
     videoId,
     reason: reason as any,
