@@ -108,6 +108,26 @@
         "name": "R2リソース",
         "href": "/dashboard/r2-resources",
         "icon": "FileBox"
+      },
+      {
+        "name": "動画管理",
+        "href": "/dashboard/videos",
+        "icon": "Film"
+      },
+      {
+        "name": "シナリオ",
+        "href": "/dashboard/scenarios",
+        "icon": "Layers"
+      },
+      {
+        "name": "報告管理",
+        "href": "/dashboard/reports",
+        "icon": "Flag"
+      },
+      {
+        "name": "生成ジョブ",
+        "href": "/dashboard/generations",
+        "icon": "Wand2"
       }
     ]
   },

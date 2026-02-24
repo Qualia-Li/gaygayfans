@@ -108,6 +108,26 @@
         "name": "R2 Files",
         "href": "/dashboard/r2-resources",
         "icon": "FileBox"
+      },
+      {
+        "name": "Videos",
+        "href": "/dashboard/videos",
+        "icon": "Film"
+      },
+      {
+        "name": "Scenarios",
+        "href": "/dashboard/scenarios",
+        "icon": "Layers"
+      },
+      {
+        "name": "Reports",
+        "href": "/dashboard/reports",
+        "icon": "Flag"
+      },
+      {
+        "name": "Generations",
+        "href": "/dashboard/generations",
+        "icon": "Wand2"
       }
     ]
   },

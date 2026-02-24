@@ -50,6 +50,17 @@ export default function VideoCard({ video, lazy = false }: { video: FeedVideo & 
         </div>
       )}
 
+      {video.creator === "AI Generated" && (
+        <div className="absolute top-16 left-3 z-10">
+          <span className="inline-flex items-center gap-1 rounded-full bg-purple-600/80 px-2.5 py-1 text-xs font-semibold text-white backdrop-blur-sm">
+            <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2L9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2z" />
+            </svg>
+            AI
+          </span>
+        </div>
+      )}
+
       <div className="absolute bottom-4 left-3 right-20 pb-safe">
         <div className="flex items-center gap-2 mb-2">
           <span className="font-bold text-white">@{video.creator}</span>

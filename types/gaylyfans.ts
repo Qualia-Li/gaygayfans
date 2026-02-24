@@ -51,6 +51,7 @@ export interface FeedVideo {
   comments: number
   shares: number
   tags: string[]
+  isAiGenerated?: boolean
 }
 
 // LoRA preset type

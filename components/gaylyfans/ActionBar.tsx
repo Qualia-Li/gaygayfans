@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useFeedStore } from "@/stores/feedStore";
 import type { FeedVideo } from "@/types/gaylyfans";
-import { submitReport } from "@/actions/feed";
+import { submitReport, toggleLike, getLikeCounts, getVisitorLikes } from "@/actions/feed";
 
 function formatCount(n: number): string {
   if (n >= 1000000) return (n / 1000000).toFixed(1) + "M";
@@ -20,6 +20,7 @@ const REPORT_REASONS = [
 
 const LIKES_KEY = "ggf-likes";
 const REPORTS_KEY = "ggf-reports";
+const VISITOR_ID_KEY = "ggf-visitor-id";
 
 function getStoredSet(key: string): Set<string> {
   try {
@@ -34,6 +35,19 @@ function storeSet(key: string, set: Set<string>) {
   localStorage.setItem(key, JSON.stringify([...set]));
 }
 
+function getVisitorId(): string {
+  try {
+    let id = localStorage.getItem(VISITOR_ID_KEY);
+    if (!id) {
+      id = crypto.randomUUID();
+      localStorage.setItem(VISITOR_ID_KEY, id);
+    }
+    return id;
+  } catch {
+    return crypto.randomUUID();
+  }
+}
+
 export default function ActionBar({ videos }: { videos: FeedVideo[] }) {
   const currentVideoId = useFeedStore((s) => s.currentVideoId);
   const [likedSet, setLikedSet] = useState<Set<string>>(new Set());
@@ -41,31 +55,109 @@ export default function ActionBar({ videos }: { videos: FeedVideo[] }) {
   const [reportedSet, setReportedSet] = useState<Set<string>>(new Set());
   const [showReport, setShowReport] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
+  const visitorIdRef = useRef<string>("");
+  const fetchedRef = useRef(false);
 
+  // Initialize visitor ID and fetch real data from DB
   useEffect(() => {
+    visitorIdRef.current = getVisitorId();
+
+    // Load localStorage cache immediately for fast render
     setLikedSet(getStoredSet(LIKES_KEY));
     setReportedSet(getStoredSet(REPORTS_KEY));
-  }, []);
+
+    // Fetch real like counts and visitor's liked state from DB
+    const realVideoIds = videos
+      .map((v) => v.id)
+      .filter((id) => id > 0); // skip AI-generated (negative IDs)
+
+    if (realVideoIds.length > 0 && !fetchedRef.current) {
+      fetchedRef.current = true;
+
+      Promise.all([
+        getLikeCounts(realVideoIds),
+        getVisitorLikes(visitorIdRef.current, realVideoIds),
+      ]).then(([counts, likedIds]) => {
+        // Set real counts from DB
+        const countMap: Record<string, number> = {};
+        for (const [videoId, count] of Object.entries(counts)) {
+          countMap[String(videoId)] = count;
+        }
+        setLikeCountMap(countMap);
+
+        // Sync liked set from DB (source of truth)
+        const dbLikedSet = new Set(likedIds.map(String));
+        setLikedSet(dbLikedSet);
+        storeSet(LIKES_KEY, dbLikedSet);
+      }).catch(() => {
+        // Silently fall back to localStorage cache
+      });
+    }
+  }, [videos]);
 
   const originalId = currentVideoId?.replace(/-\d+$/, "") ?? null;
   const video = videos.find((v) => String(v.id) === originalId);
   if (!video || !originalId) return null;
 
   const liked = likedSet.has(originalId);
-  const likeCount = likeCountMap[originalId] ?? video.likes + (liked ? 1 : 0);
+  const isAiGenerated = Number(originalId) < 0;
+
+  // Use DB count if available, otherwise fall back to video.likes
+  const likeCount = likeCountMap[originalId] ?? video.likes;
   const reported = reportedSet.has(originalId);
 
-  const handleLike = () => {
-    const newSet = new Set(likedSet);
-    if (liked) {
-      newSet.delete(originalId);
-      setLikeCountMap((m) => ({ ...m, [originalId]: (m[originalId] ?? video.likes + 1) - 1 }));
+  const handleLike = async () => {
+    if (isAiGenerated) return; // Can't like AI-generated videos (no DB row)
+
+    const wasLiked = liked;
+    const videoIdNum = Number(originalId);
+
+    // Optimistic update
+    const newLikedSet = new Set(likedSet);
+    if (wasLiked) {
+      newLikedSet.delete(originalId);
+      setLikeCountMap((m) => ({
+        ...m,
+        [originalId]: Math.max(0, (m[originalId] ?? video.likes) - 1),
+      }));
     } else {
-      newSet.add(originalId);
-      setLikeCountMap((m) => ({ ...m, [originalId]: (m[originalId] ?? video.likes) + 1 }));
+      newLikedSet.add(originalId);
+      setLikeCountMap((m) => ({
+        ...m,
+        [originalId]: (m[originalId] ?? video.likes) + 1,
+      }));
     }
-    setLikedSet(newSet);
-    storeSet(LIKES_KEY, newSet);
+    setLikedSet(newLikedSet);
+    storeSet(LIKES_KEY, newLikedSet);
+
+    // Server action
+    try {
+      const result = await toggleLike(videoIdNum, visitorIdRef.current);
+      // Reconcile with server truth
+      setLikeCountMap((m) => ({ ...m, [originalId]: result.newCount }));
+      if (result.liked !== !wasLiked) {
+        // Server disagrees with our optimistic state, correct it
+        const correctedSet = new Set(likedSet);
+        if (result.liked) {
+          correctedSet.add(originalId);
+        } else {
+          correctedSet.delete(originalId);
+        }
+        setLikedSet(correctedSet);
+        storeSet(LIKES_KEY, correctedSet);
+      }
+    } catch {
+      // Revert optimistic update on failure
+      const revertedSet = new Set(likedSet);
+      if (wasLiked) {
+        revertedSet.add(originalId);
+      } else {
+        revertedSet.delete(originalId);
+      }
+      setLikedSet(revertedSet);
+      storeSet(LIKES_KEY, revertedSet);
+      setLikeCountMap((m) => ({ ...m, [originalId]: video.likes }));
+    }
   };
 
   const handleReport = async (reason: string) => {
@@ -99,7 +191,7 @@ export default function ActionBar({ videos }: { videos: FeedVideo[] }) {
           </div>
         </div>
 
-        <button onClick={handleLike} className="flex flex-col items-center">
+        <button onClick={handleLike} className="flex flex-col items-center" disabled={isAiGenerated}>
           <div className={`text-3xl transition-transform ${liked ? "scale-125" : ""}`}>
             {liked ? "❤️" : "🤍"}
           </div>

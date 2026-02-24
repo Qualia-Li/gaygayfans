@@ -108,6 +108,26 @@
         "name": "R2资源管理",
         "href": "/dashboard/r2-resources",
         "icon": "FileBox"
+      },
+      {
+        "name": "视频管理",
+        "href": "/dashboard/videos",
+        "icon": "Film"
+      },
+      {
+        "name": "场景管理",
+        "href": "/dashboard/scenarios",
+        "icon": "Layers"
+      },
+      {
+        "name": "举报管理",
+        "href": "/dashboard/reports",
+        "icon": "Flag"
+      },
+      {
+        "name": "生成任务",
+        "href": "/dashboard/generations",
+        "icon": "Wand2"
       }
     ]
   },

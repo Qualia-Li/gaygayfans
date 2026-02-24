@@ -6,7 +6,13 @@ import Feed from "./Feed";
 import Header from "./Header";
 import type { FeedVideo } from "@/types/gaylyfans";
 
-export default function GaylyFansHome({ initialVideos }: { initialVideos: FeedVideo[] }) {
+export default function GaylyFansHome({
+  initialVideos,
+  generatedVideos = [],
+}: {
+  initialVideos: FeedVideo[];
+  generatedVideos?: FeedVideo[];
+}) {
   const verified = useAgeGate((s) => s.verified);
 
   if (!verified) {
@@ -16,7 +22,7 @@ export default function GaylyFansHome({ initialVideos }: { initialVideos: FeedVi
   return (
     <div className="bg-black min-h-dvh">
       <Header />
-      <Feed initialVideos={initialVideos} />
+      <Feed initialVideos={initialVideos} generatedVideos={generatedVideos} />
     </div>
   );
 }

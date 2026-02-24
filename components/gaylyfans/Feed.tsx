@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import type { FeedVideo } from "@/types/gaylyfans";
 import VideoCard from "./VideoCard";
 import ActionBar from "./ActionBar";
@@ -16,10 +16,20 @@ function shuffle<T>(arr: T[]): T[] {
 
 const BATCH_SIZE = 8;
 
-export default function Feed({ initialVideos }: { initialVideos: FeedVideo[] }) {
-  const [allVideos] = useState<FeedVideo[]>(initialVideos);
+export default function Feed({
+  initialVideos,
+  generatedVideos = [],
+}: {
+  initialVideos: FeedVideo[];
+  generatedVideos?: FeedVideo[];
+}) {
+  // Merge curated and AI-generated videos into a single pool
+  const allVideos = useMemo(() => {
+    return [...initialVideos, ...generatedVideos];
+  }, [initialVideos, generatedVideos]);
+
   const [displayVideos, setDisplayVideos] = useState<{ key: string; video: FeedVideo }[]>(() =>
-    shuffle(initialVideos).slice(0, BATCH_SIZE).map((v, i) => ({ key: `${v.id}-${i}`, video: v }))
+    shuffle(allVideos).slice(0, BATCH_SIZE).map((v, i) => ({ key: `${v.id}-${i}`, video: v }))
   );
   const sentinelRef = useRef<HTMLDivElement>(null);
 
