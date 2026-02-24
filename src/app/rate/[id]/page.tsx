@@ -45,7 +45,7 @@ export default function ScenarioDetailPage() {
     return (
       <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center gap-4">
         <Text color="red">Scenario not found</Text>
-        <Link href="/rate" className="text-pink-400 hover:underline">
+        <Link href="/rate" className="text-orange-400 hover:underline">
           Back to gallery
         </Link>
       </div>

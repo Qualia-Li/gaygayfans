@@ -41,7 +41,7 @@ export default function AboutPage() {
       <h2>Contact</h2>
       <p>
         Questions or feedback? Visit our{" "}
-        <a href="/contact" className="text-pink-400 hover:text-pink-300">Contact page</a>.
+        <a href="/contact" className="text-orange-400 hover:text-orange-300">Contact page</a>.
       </p>
     </LegalLayout>
   );

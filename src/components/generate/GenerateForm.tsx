@@ -97,7 +97,7 @@ export default function GenerateForm() {
     <Flex direction="column" gap="4">
       {/* Credits info */}
       <Flex align="center" gap="3">
-        <Badge size="2" color="pink" variant="solid" highContrast>⚡ {credits} credits</Badge>
+        <Badge size="2" color="orange" variant="solid" highContrast>⚡ {credits} credits</Badge>
         <Text size="1" color="gray">Each generation costs 3 credits</Text>
       </Flex>
 
@@ -133,7 +133,7 @@ export default function GenerateForm() {
                 key={i}
                 onClick={() => setSelectedImage(img)}
                 className={`rounded-lg overflow-hidden border-2 transition-all cursor-pointer ${
-                  selectedImage === img ? "border-pink-500" : "border-transparent"
+                  selectedImage === img ? "border-orange-500" : "border-transparent"
                 }`}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -189,7 +189,7 @@ export default function GenerateForm() {
               size="3"
               onClick={handleGenerate}
               disabled={generating || credits < 3 || !prompt}
-              className="cursor-pointer !bg-gradient-to-r !from-pink-500 !to-purple-600"
+              className="cursor-pointer !bg-gradient-to-r !from-orange-500 !to-purple-600"
             >
               {generating ? "Starting..." : `Generate Video (3 credits)`}
             </Button>

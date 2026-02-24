@@ -114,7 +114,7 @@ export default function VideoComparison({ scenario }: VideoComparisonProps) {
               Thanks for rating!
             </Text>
             {isLoggedIn && (
-              <Callout.Root color="pink" variant="soft" size="1">
+              <Callout.Root color="orange" variant="soft" size="1">
                 <Callout.Text>⚡ +1 credit earned!</Callout.Text>
               </Callout.Root>
             )}
@@ -126,7 +126,7 @@ export default function VideoComparison({ scenario }: VideoComparisonProps) {
             disabled={!hasRatings}
             className={`cursor-pointer ${
               hasRatings
-                ? "!bg-gradient-to-r !from-pink-500 !to-purple-600 shadow-lg shadow-pink-500/30"
+                ? "!bg-gradient-to-r !from-orange-500 !to-purple-600 shadow-lg shadow-orange-500/30"
                 : ""
             }`}
           >

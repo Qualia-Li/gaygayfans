@@ -13,7 +13,7 @@ export default function CreditsDisplay() {
       <Flex align="center" gap="4" wrap="wrap">
         <Flex align="center" gap="2">
           <Text size="2" color="gray">Credits:</Text>
-          <Badge size="2" color="pink" variant="solid" highContrast>
+          <Badge size="2" color="orange" variant="solid" highContrast>
             {credits}
           </Badge>
         </Flex>

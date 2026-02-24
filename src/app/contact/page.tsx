@@ -16,7 +16,7 @@ export default function ContactPage() {
       <h2>General Inquiries</h2>
       <p>
         For general questions, feedback, or suggestions about GaylyFans, email us at:{" "}
-        <a href="mailto:hello@gaylyfans.com" className="text-pink-400 hover:text-pink-300">
+        <a href="mailto:hello@gaylyfans.com" className="text-orange-400 hover:text-orange-300">
           hello@gaylyfans.com
         </a>
       </p>
@@ -25,7 +25,7 @@ export default function ContactPage() {
       <p>
         If you believe content on our platform infringes your copyright or was posted
         without your consent, please email:{" "}
-        <a href="mailto:takedown@gaylyfans.com" className="text-pink-400 hover:text-pink-300">
+        <a href="mailto:takedown@gaylyfans.com" className="text-orange-400 hover:text-orange-300">
           takedown@gaylyfans.com
         </a>
       </p>
@@ -41,7 +41,7 @@ export default function ContactPage() {
       <h2>Creator Inquiries</h2>
       <p>
         Interested in sharing your content on GaylyFans? Email:{" "}
-        <a href="mailto:creators@gaylyfans.com" className="text-pink-400 hover:text-pink-300">
+        <a href="mailto:creators@gaylyfans.com" className="text-orange-400 hover:text-orange-300">
           creators@gaylyfans.com
         </a>
       </p>
@@ -49,7 +49,7 @@ export default function ContactPage() {
       <h2>Report Abuse</h2>
       <p>
         To report illegal content or abuse, email:{" "}
-        <a href="mailto:abuse@gaylyfans.com" className="text-pink-400 hover:text-pink-300">
+        <a href="mailto:abuse@gaylyfans.com" className="text-orange-400 hover:text-orange-300">
           abuse@gaylyfans.com
         </a>
       </p>
@@ -57,7 +57,7 @@ export default function ContactPage() {
         For emergencies involving the safety of minors, please also contact the{" "}
         <a
           href="https://www.missingkids.org/gethelpnow/cybertipline"
-          className="text-pink-400 hover:text-pink-300"
+          className="text-orange-400 hover:text-orange-300"
           target="_blank"
           rel="noopener noreferrer"
         >

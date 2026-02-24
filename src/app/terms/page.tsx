@@ -57,7 +57,7 @@ export default function TermsPage() {
       <h2>6. DMCA / Takedown Requests</h2>
       <p>
         If you believe content on our platform infringes your copyright, please contact
-        us via our <a href="/contact" className="text-pink-400 hover:text-pink-300">Contact page</a> with:
+        us via our <a href="/contact" className="text-orange-400 hover:text-orange-300">Contact page</a> with:
       </p>
       <ul>
         <li>A description of the copyrighted work</li>

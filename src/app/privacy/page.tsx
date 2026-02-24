@@ -67,7 +67,7 @@ export default function PrivacyPage() {
       <h2>7. Contact</h2>
       <p>
         For privacy-related inquiries, please visit our{" "}
-        <a href="/contact" className="text-pink-400 hover:text-pink-300">Contact page</a>.
+        <a href="/contact" className="text-orange-400 hover:text-orange-300">Contact page</a>.
       </p>
     </LegalLayout>
   );

@@ -18,7 +18,7 @@ export default function ScenarioCard({
 }: ScenarioCardProps) {
   return (
     <Link href={`/rate/${id}`}>
-      <Card className="group !bg-zinc-900 hover:ring-2 hover:ring-pink-500 transition-all overflow-hidden cursor-pointer">
+      <Card className="group !bg-zinc-900 hover:ring-2 hover:ring-orange-500 transition-all overflow-hidden cursor-pointer">
         <div className="aspect-video relative bg-zinc-800 -m-4 mb-0 rounded-t-lg overflow-hidden">
           {sourceImageUrl ? (
             // eslint-disable-next-line @next/next/no-img-element

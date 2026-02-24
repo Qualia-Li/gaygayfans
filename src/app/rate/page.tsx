@@ -27,7 +27,7 @@ export default function RatePage() {
 
         <Flex direction="column" gap="4" className="mb-6">
           <CreditsDisplay />
-          <Callout.Root color="pink" variant="soft" size="1">
+          <Callout.Root color="orange" variant="soft" size="1">
             <Callout.Text>
               ⚡ Every rating you submit earns you <strong>+1 credit</strong>. Credits let you unlock results and generate new videos!
             </Callout.Text>

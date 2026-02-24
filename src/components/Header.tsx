@@ -47,7 +47,7 @@ export default function Header() {
 
           <Flex align="center" gap="3">
             {isLoggedIn && (
-              <Badge size="2" color="pink" variant="solid" highContrast className="px-3 py-1">
+              <Badge size="2" color="orange" variant="solid" highContrast className="px-3 py-1">
                 ⚡ {credits} credits
               </Badge>
             )}
@@ -72,7 +72,7 @@ export default function Header() {
               ))}
             </div>
             <Link href="/generate">
-              <Button variant="soft" size="2" color="pink" className="cursor-pointer">
+              <Button variant="soft" size="2" color="orange" className="cursor-pointer">
                 Generate
               </Button>
             </Link>
@@ -87,7 +87,7 @@ export default function Header() {
               <Button
                 variant="outline"
                 size="2"
-                color="pink"
+                color="orange"
                 className="cursor-pointer"
                 onClick={() => setShowAuth(true)}
               >

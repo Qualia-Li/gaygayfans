@@ -60,7 +60,7 @@ export default function ContentPolicyPage() {
       <h2>6. Reporting Violations</h2>
       <p>
         If you encounter content that violates this policy, please report it immediately
-        via our <a href="/contact" className="text-pink-400 hover:text-pink-300">Contact page</a>.
+        via our <a href="/contact" className="text-orange-400 hover:text-orange-300">Contact page</a>.
         We investigate all reports within 24 hours and take swift action.
       </p>
 

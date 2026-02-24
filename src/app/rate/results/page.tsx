@@ -98,7 +98,7 @@ export default function ResultsPage() {
                     <Flex direction="column" gap="2">
                       <Flex align="center" justify="between">
                         <Text weight="medium">{v.label}</Text>
-                        <Badge color="pink" variant="solid">
+                        <Badge color="orange" variant="solid">
                           {v.avgStars.toFixed(1)} ★
                         </Badge>
                       </Flex>

@@ -35,7 +35,7 @@ export default function VideoCard({ video, lazy = false }: { video: Video; lazy?
       {/* Loading spinner */}
       {videoLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-black z-10">
-          <div className="h-10 w-10 rounded-full border-3 border-white/20 border-t-pink-500 animate-spin" />
+          <div className="h-10 w-10 rounded-full border-3 border-white/20 border-t-orange-500 animate-spin" />
         </div>
       )}
 
@@ -74,7 +74,7 @@ export default function VideoCard({ video, lazy = false }: { video: Video; lazy?
           <div className="flex h-12 w-12 items-center justify-center rounded-full bg-zinc-800 text-2xl ring-2 ring-white">
             {video.creatorAvatar}
           </div>
-          <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 flex h-5 w-5 items-center justify-center rounded-full bg-pink-500 text-xs font-bold text-white">
+          <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 flex h-5 w-5 items-center justify-center rounded-full bg-orange-500 text-xs font-bold text-white">
             +
           </div>
         </div>

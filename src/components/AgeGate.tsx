@@ -87,11 +87,11 @@ export default function AgeGate() {
               />
               <Text size="1" color="gray">
                 I agree to the{" "}
-                <a href="/terms" className="text-pink-400 hover:text-pink-300 underline" target="_blank">
+                <a href="/terms" className="text-orange-400 hover:text-orange-300 underline" target="_blank">
                   Terms of Service
                 </a>{" "}
                 and{" "}
-                <a href="/privacy" className="text-pink-400 hover:text-pink-300 underline" target="_blank">
+                <a href="/privacy" className="text-orange-400 hover:text-orange-300 underline" target="_blank">
                   Privacy Policy
                 </a>
               </Text>
@@ -99,7 +99,7 @@ export default function AgeGate() {
 
             <Button
               size="3"
-              className="w-full cursor-pointer !bg-gradient-to-r !from-pink-500 !via-purple-500 !to-blue-500"
+              className="w-full cursor-pointer !bg-gradient-to-r !from-orange-500 !via-purple-500 !to-blue-500"
               disabled={!canEnter}
               onClick={() => canEnter && setVerified(true)}
             >

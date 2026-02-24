@@ -12,7 +12,7 @@ export default function BestPicker({ selected, onToggle, disabled }: BestPickerP
   return (
     <Button
       variant={selected ? "solid" : "soft"}
-      color="pink"
+      color="orange"
       size="1"
       disabled={disabled}
       onClick={onToggle}

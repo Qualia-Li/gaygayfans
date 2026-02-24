@@ -61,7 +61,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} antialiased bg-black`}>
-        <Theme appearance="dark" accentColor="pink" grayColor="slate" radius="large">
+        <Theme appearance="dark" accentColor="orange" grayColor="slate" radius="large">
           <ErrorReporter />
           {children}
         </Theme>
