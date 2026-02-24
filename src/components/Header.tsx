@@ -50,7 +50,7 @@ export default function Header() {
   const rated = originalVideoId ? (ratedMap[originalVideoId] ?? 0) : 0;
 
   const handleStarClick = useCallback(async (stars: number) => {
-    if (!originalVideoId || submitting || rated > 0) return;
+    if (!originalVideoId || submitting) return;
     setRatedMap((m) => ({ ...m, [originalVideoId]: stars }));
     setSubmitting(true);
 
@@ -111,12 +111,12 @@ export default function Header() {
                 <span
                   key={star}
                   className={`text-xl transition-all duration-150 cursor-pointer select-none ${
-                    star <= (rated || starHover)
+                    star <= (starHover || rated)
                       ? "text-yellow-400 scale-125"
                       : "text-white/40 hover:text-yellow-300"
-                  } ${rated > 0 ? "pointer-events-none" : ""}`}
-                  onMouseEnter={() => !rated && setStarHover(star)}
-                  onMouseLeave={() => !rated && setStarHover(0)}
+                  }`}
+                  onMouseEnter={() => setStarHover(star)}
+                  onMouseLeave={() => setStarHover(0)}
                   onClick={() => handleStarClick(star)}
                 >
                   ★
