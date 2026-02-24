@@ -66,7 +66,7 @@ export default function Feed() {
     return (
       <div className="flex h-dvh items-center justify-center bg-black">
         <div className="text-center">
-          <div className="mb-4 text-5xl animate-bounce">🏳️‍🌈</div>
+          <img src="/logo-gooey.png" alt="Loading" className="mb-4 h-16 w-auto animate-bounce" />
           <div className="flex items-center gap-2">
             <div className="h-2 w-2 rounded-full bg-orange-500 animate-pulse" />
             <div className="h-2 w-2 rounded-full bg-purple-500 animate-pulse [animation-delay:150ms]" />

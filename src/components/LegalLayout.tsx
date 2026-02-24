@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Container, Heading, Text, Flex } from "@radix-ui/themes";
 
 export default function LegalLayout({
@@ -13,8 +14,9 @@ export default function LegalLayout({
       <nav className="sticky top-0 z-40 border-b border-zinc-800 bg-black/90 backdrop-blur">
         <Container size="3">
           <Flex align="center" gap="4" className="px-4 py-3">
-            <Link href="/" className="text-lg font-bold hover:opacity-80">
-              🏳️‍🌈 GaylyFans
+            <Link href="/" className="flex items-center gap-2 hover:opacity-80">
+              <Image src="/logo-gooey.png" alt="GaylyFans" width={32} height={32} className="h-8 w-auto" />
+              <span className="text-lg font-bold">GaylyFans</span>
             </Link>
           </Flex>
         </Container>

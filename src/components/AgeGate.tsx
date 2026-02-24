@@ -82,7 +82,7 @@ export default function AgeGate() {
 
               <Card className="!bg-zinc-800" role="listitem">
                 <Flex gap="3" align="start">
-                  <Text size="4" className="mt-0.5" aria-hidden="true">🏳️‍🌈</Text>
+                  <img src="/logo-gooey.png" alt="" className="h-6 w-auto mt-0.5" aria-hidden="true" />
                   <div>
                     <Text as="p" weight="medium" size="2">I want to view gay content</Text>
                     <Text as="p" size="1" color="gray">
