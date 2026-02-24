@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useFeedStore } from "@/store/feedStore";
 import { Video } from "@/data/videos";
 
@@ -17,31 +17,64 @@ const REPORT_REASONS = [
   { id: "child_content", label: "Involves a minor", icon: "🚨" },
 ];
 
+const LIKES_KEY = "ggf-likes";
+const REPORTS_KEY = "ggf-reports";
+
+function getStoredSet(key: string): Set<string> {
+  try {
+    const data = localStorage.getItem(key);
+    return data ? new Set(JSON.parse(data)) : new Set();
+  } catch {
+    return new Set();
+  }
+}
+
+function storeSet(key: string, set: Set<string>) {
+  localStorage.setItem(key, JSON.stringify([...set]));
+}
+
 export default function ActionBar({ videos }: { videos: Video[] }) {
   const currentVideoId = useFeedStore((s) => s.currentVideoId);
-  const [likedMap, setLikedMap] = useState<Record<string, boolean>>({});
+  const [likedSet, setLikedSet] = useState<Set<string>>(new Set());
   const [likeCountMap, setLikeCountMap] = useState<Record<string, number>>({});
-  const [reportedMap, setReportedMap] = useState<Record<string, boolean>>({});
+  const [reportedSet, setReportedSet] = useState<Set<string>>(new Set());
   const [showReport, setShowReport] = useState(false);
   const [showConfirmation, setShowConfirmation] = useState(false);
+
+  // Load persisted likes and reports from localStorage on mount
+  useEffect(() => {
+    setLikedSet(getStoredSet(LIKES_KEY));
+    setReportedSet(getStoredSet(REPORTS_KEY));
+  }, []);
 
   // Strip the infinite-scroll suffix (e.g. "video1-8" → "video1") for state tracking
   const originalId = currentVideoId?.replace(/-\d+$/, "") ?? null;
   const video = videos.find((v) => v.id === originalId);
   if (!video || !originalId) return null;
 
-  const liked = likedMap[originalId] ?? false;
-  const likeCount = likeCountMap[originalId] ?? video.likes;
-  const reported = reportedMap[originalId] ?? false;
+  const liked = likedSet.has(originalId);
+  const likeCount = likeCountMap[originalId] ?? video.likes + (liked ? 1 : 0);
+  const reported = reportedSet.has(originalId);
 
   const handleLike = () => {
-    setLikedMap((m) => ({ ...m, [originalId]: !liked }));
-    setLikeCountMap((m) => ({ ...m, [originalId]: liked ? likeCount - 1 : likeCount + 1 }));
+    const newSet = new Set(likedSet);
+    if (liked) {
+      newSet.delete(originalId);
+      setLikeCountMap((m) => ({ ...m, [originalId]: (m[originalId] ?? video.likes + 1) - 1 }));
+    } else {
+      newSet.add(originalId);
+      setLikeCountMap((m) => ({ ...m, [originalId]: (m[originalId] ?? video.likes) + 1 }));
+    }
+    setLikedSet(newSet);
+    storeSet(LIKES_KEY, newSet);
   };
 
   const handleReport = async (reason: string) => {
     setShowReport(false);
-    setReportedMap((m) => ({ ...m, [originalId]: true }));
+    const newSet = new Set(reportedSet);
+    newSet.add(originalId);
+    setReportedSet(newSet);
+    storeSet(REPORTS_KEY, newSet);
     setShowConfirmation(true);
     try {
       await fetch("/api/report", {

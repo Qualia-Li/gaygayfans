@@ -49,9 +49,10 @@ export default function Header() {
   }, [setAuth]);
 
   // Fetch existing ratings from backend (re-fetch when login state changes)
+  // Always pass anon visitorId so backend can migrate anon→email ratings on login
   useEffect(() => {
     const vid = visitorIdRef.current;
-    const params = !isLoggedIn && vid ? `?visitorId=${encodeURIComponent(vid)}` : "";
+    const params = vid ? `?visitorId=${encodeURIComponent(vid)}` : "";
     fetch(`/api/rate/my-ratings${params}`)
       .then((r) => r.ok ? r.json() : null)
       .then((data) => {
