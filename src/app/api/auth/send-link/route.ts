@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
 
     const resend = new Resend(process.env.RESEND_API_KEY);
     const { error: sendError } = await resend.emails.send({
-      from: "GaylyFans <noreply@gaylyfans.com>",
+      from: process.env.RESEND_FROM_EMAIL || "GaylyFans <onboarding@resend.dev>",
       to: email,
       subject: "Your magic link to GaylyFans",
       html: `
