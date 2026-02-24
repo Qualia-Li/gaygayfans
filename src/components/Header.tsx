@@ -4,8 +4,18 @@ import Link from "next/link";
 import { Flex, Text, Button, Badge } from "@radix-ui/themes";
 import { useAuthStore } from "@/store/authStore";
 import { useFeedStore } from "@/store/feedStore";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import AuthModal from "./AuthModal";
+
+function getAnonVisitorId(): string {
+  const key = "ggf-visitor-id";
+  let id = localStorage.getItem(key);
+  if (!id) {
+    id = "v_" + Math.random().toString(36).slice(2) + Date.now().toString(36);
+    localStorage.setItem(key, id);
+  }
+  return id;
+}
 
 export default function Header() {
   const { email, isLoggedIn, credits, ratingsCount, setAuth, incrementCredits, incrementRatingsCount, logout } = useAuthStore();
@@ -14,11 +24,17 @@ export default function Header() {
   const [starHover, setStarHover] = useState(0);
   const [ratedMap, setRatedMap] = useState<Record<string, number>>({});
   const [submitting, setSubmitting] = useState(false);
+  const visitorIdRef = useRef<string>("");
 
   // Reset hover when video changes
   useEffect(() => {
     setStarHover(0);
   }, [currentVideoId]);
+
+  // Initialize visitor ID
+  useEffect(() => {
+    visitorIdRef.current = getAnonVisitorId();
+  }, []);
 
   // Check session on mount
   useEffect(() => {
@@ -32,9 +48,11 @@ export default function Header() {
       .catch(() => {});
   }, [setAuth]);
 
-  // Fetch existing ratings from backend on mount
+  // Fetch existing ratings from backend (re-fetch when login state changes)
   useEffect(() => {
-    fetch("/api/rate/my-ratings")
+    const vid = visitorIdRef.current;
+    const params = !isLoggedIn && vid ? `?visitorId=${encodeURIComponent(vid)}` : "";
+    fetch(`/api/rate/my-ratings${params}`)
       .then((r) => r.ok ? r.json() : null)
       .then((data) => {
         if (data?.ratings) {
@@ -42,7 +60,7 @@ export default function Header() {
         }
       })
       .catch(() => {});
-  }, []);
+  }, [isLoggedIn]);
 
   // Strip infinite-scroll suffix for API calls
   const originalVideoId = currentVideoId?.replace(/-\d+$/, "") ?? null;
@@ -60,7 +78,7 @@ export default function Header() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           scenarioId: originalVideoId,
-          visitorId: "anon",
+          visitorId: email || visitorIdRef.current,
           ratings: [{ variantId: originalVideoId, stars }],
         }),
       });

@@ -1,8 +1,8 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { getRedis } from "@/lib/redis";
 import { getSession } from "@/lib/auth";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   const redis = getRedis();
   const session = await getSession();
 
@@ -12,14 +12,17 @@ export async function GET() {
     return NextResponse.json({ ratings: {} });
   }
 
-  // Determine visitor ID — use session email if logged in, else "anon"
-  const visitorId = session?.email || "anon";
+  // Use session email if logged in, else visitor ID from query param
+  const visitorId = session?.email || req.nextUrl.searchParams.get("visitorId");
+  if (!visitorId) {
+    return NextResponse.json({ ratings: {} });
+  }
 
   // Fetch ratings for this visitor
   const ratings: Record<string, number> = {};
-  const keys = scenarioIds.map((id) => `rating:${id}:${visitorId}`);
 
-  for (const key of keys) {
+  for (const scenarioId of scenarioIds) {
+    const key = `rating:${scenarioId}:${visitorId}`;
     const data = await redis.get(key);
     if (data) {
       const parsed = typeof data === "string" ? JSON.parse(data) : data;

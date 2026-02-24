@@ -11,7 +11,21 @@ export async function POST(req: NextRequest) {
   }
 
   const redis = getRedis();
-  const key = `rating:${body.scenarioId}:${body.visitorId}`;
+  const session = await getSession();
+  // Use session email as visitor ID when logged in (enables cross-device sync)
+  const visitorId = session?.email || body.visitorId;
+  const key = `rating:${body.scenarioId}:${visitorId}`;
+
+  // If user just signed in, migrate their anon ratings to their email
+  if (session?.email && body.visitorId !== session.email) {
+    const anonKey = `rating:${body.scenarioId}:${body.visitorId}`;
+    const anonRating = await redis.get(anonKey);
+    if (anonRating && !(await redis.get(key))) {
+      // Copy anon rating to user's key
+      await redis.set(key, typeof anonRating === "string" ? anonRating : JSON.stringify(anonRating));
+      await redis.sadd(`submissions:${body.scenarioId}`, key);
+    }
+  }
 
   // Check if this is a new submission (not a re-submit)
   const existing = await redis.get(key);
@@ -29,7 +43,6 @@ export async function POST(req: NextRequest) {
   // Only increment credits for NEW ratings (prevent credit farming)
   let credits: number | undefined;
   let ratingsCount: number | undefined;
-  const session = await getSession();
   if (session?.email && isNew) {
     const result = await incrementUserRating(session.email);
     credits = result.credits;
