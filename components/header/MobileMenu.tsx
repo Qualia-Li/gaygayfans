@@ -44,13 +44,12 @@ export default function MobileMenu() {
             className="flex items-center space-x-1 font-bold"
           >
             <Image
-              alt={t("title")}
-              src="/logo.png"
-              className="w-6 h-6"
-              width={32}
+              alt="GaylyFans"
+              src="/logo-gooey.png"
+              className="h-8 w-auto"
+              width={120}
               height={32}
             />
-            <span>{t("title")}</span>
           </I18nLink>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />

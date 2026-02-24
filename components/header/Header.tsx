@@ -26,14 +26,7 @@ const Header = async () => {
             prefetch={true}
             className="flex items-center space-x-1"
           >
-            <Image src="/logo.png" alt="Logo" width={28} height={28} />
-            <span
-              className={cn(
-                "text-xl font-semibold text-primary font-science-gothic"
-              )}
-            >
-              {t("title")}
-            </span>
+            <Image src="/logo-gooey.png" alt="GaylyFans" width={140} height={36} className="h-9 w-auto" />
           </I18nLink>
 
           <HeaderLinks />

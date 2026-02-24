@@ -92,11 +92,11 @@ export default function AgeGate() {
 
               <Card className="bg-zinc-800 border-zinc-700">
                 <CardContent className="flex gap-3 p-4">
-                  <img src="/logo-gooey.png" alt="" className="h-6 w-auto mt-0.5" />
+                  <span className="text-2xl mt-0.5">🏳️‍🌈</span>
                   <div>
-                    <p className="font-medium text-sm text-white">I want to view gay content</p>
+                    <p className="font-medium text-sm text-white">I want to view gay NSFW content</p>
                     <p className="text-xs text-zinc-400">
-                      This site features adult content created for and by gay men.
+                      This site features NSFW adult content created for and by gay men.
                     </p>
                   </div>
                 </CardContent>

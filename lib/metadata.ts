@@ -70,7 +70,7 @@ export async function constructMetadata({
     }))
     : useDefaultOgImage
       ? [{
-        url: `${siteConfig.url}/og${locale === DEFAULT_LOCALE ? '' : '_' + locale}.png`,
+        url: `${siteConfig.url}/og-image.png`,
         alt: pageTitle,
       }]
       : undefined
