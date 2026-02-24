@@ -1,17 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAgeGate } from "@/store/ageGate";
 import { Card, Button, Text, Flex, Heading, Select, Checkbox } from "@radix-ui/themes";
+
+const bgImages = ["/bg-anime-1.png", "/bg-real-1.png", "/bg-anime-2.png", "/bg-real-2.png"];
 
 export default function AgeGate() {
   const setVerified = useAgeGate((s) => s.setVerified);
   const [birthYear, setBirthYear] = useState("");
   const [agreedTerms, setAgreedTerms] = useState(false);
+  const [bgIndex, setBgIndex] = useState(0);
 
   const currentYear = new Date().getFullYear();
   const isOldEnough = birthYear !== "" && currentYear - parseInt(birthYear) >= 18;
   const canEnter = isOldEnough && agreedTerms;
+
+  // Rotate background images
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setBgIndex((i) => (i + 1) % bgImages.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Generate year options from 1930 to (currentYear - 18)
   const years: string[] = [];
@@ -21,7 +32,19 @@ export default function AgeGate() {
 
   return (
     <main className="fixed inset-0 z-50 overflow-y-auto bg-black">
-      <div className="flex min-h-dvh flex-col items-center justify-center py-8">
+      {/* Rotating background images */}
+      {bgImages.map((src, i) => (
+        <div
+          key={src}
+          className="absolute inset-0 bg-cover bg-center transition-opacity duration-1000"
+          style={{
+            backgroundImage: `url(${src})`,
+            opacity: i === bgIndex ? 0.3 : 0,
+          }}
+        />
+      ))}
+      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/40" />
+      <div className="relative flex min-h-dvh flex-col items-center justify-center py-8">
         <Card size="4" className="mx-4 max-w-md w-full !bg-zinc-900">
           <Flex direction="column" align="center" gap="4">
             <Text size="8" aria-hidden="true">🏳️‍🌈</Text>
