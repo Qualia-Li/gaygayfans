@@ -3,11 +3,13 @@
 import { useState } from "react";
 import { Card, Flex, Text, TextField, Button, Select, TextArea, Badge, Callout } from "@radix-ui/themes";
 import { useAuthStore } from "@/store/authStore";
+import AuthModal from "@/components/AuthModal";
 import presets from "@/data/lora-presets.json";
 import GenerationStatus from "./GenerationStatus";
 
 export default function GenerateForm() {
   const { isLoggedIn, credits, setCredits } = useAuthStore();
+  const [showAuth, setShowAuth] = useState(false);
 
   const [postUrl, setPostUrl] = useState("");
   const [images, setImages] = useState<string[]>([]);
@@ -79,13 +81,15 @@ export default function GenerateForm() {
 
   if (!isLoggedIn) {
     return (
-      <Card className="!bg-zinc-900" size="3">
-        <Flex direction="column" align="center" gap="3" py="4">
-          <Text size="6">🔒</Text>
-          <Text size="4" weight="medium">Sign in to generate videos</Text>
-          <Text size="2" color="gray">You need an account and 3 credits per generation.</Text>
-        </Flex>
-      </Card>
+      <>
+        <AuthModal open={showAuth} onOpenChange={setShowAuth} />
+        <Card className="!bg-zinc-900 cursor-pointer" size="3" onClick={() => setShowAuth(true)}>
+          <Flex direction="column" align="center" gap="3" py="4">
+            <Text size="6">🔒</Text>
+            <Text size="4" weight="medium">Tap to sign in and start generating</Text>
+          </Flex>
+        </Card>
+      </>
     );
   }
 
