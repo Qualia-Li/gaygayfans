@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useAgeGate } from "@/store/ageGate";
 import { Card, Button, Text, Flex, Heading, Select, Checkbox } from "@radix-ui/themes";
 
@@ -8,6 +9,7 @@ const bgImages = ["/bg-anime-1.png", "/bg-real-1.png", "/bg-anime-2.png", "/bg-r
 
 export default function AgeGate() {
   const setVerified = useAgeGate((s) => s.setVerified);
+  const router = useRouter();
   const [birthYear, setBirthYear] = useState("2000");
   const [agreedTerms, setAgreedTerms] = useState(false);
   const [bgIndex, setBgIndex] = useState(0);
@@ -125,7 +127,7 @@ export default function AgeGate() {
               size="3"
               className="w-full cursor-pointer !bg-gradient-to-r !from-orange-500 !via-purple-500 !to-blue-500"
               disabled={!canEnter}
-              onClick={() => canEnter && setVerified(true)}
+              onClick={() => { if (canEnter) { setVerified(true); router.push("/"); } }}
             >
               I Confirm All of the Above — Enter
             </Button>
