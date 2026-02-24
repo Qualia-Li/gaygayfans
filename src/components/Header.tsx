@@ -32,6 +32,18 @@ export default function Header() {
       .catch(() => {});
   }, [setAuth]);
 
+  // Fetch existing ratings from backend on mount
+  useEffect(() => {
+    fetch("/api/rate/my-ratings")
+      .then((r) => r.ok ? r.json() : null)
+      .then((data) => {
+        if (data?.ratings) {
+          setRatedMap((prev) => ({ ...data.ratings, ...prev }));
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   // Strip infinite-scroll suffix for API calls
   const originalVideoId = currentVideoId?.replace(/-\d+$/, "") ?? null;
 
