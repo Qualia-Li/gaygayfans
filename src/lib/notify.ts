@@ -1,5 +1,9 @@
-const TELEGRAM_BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
-const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
+function cleanEnv(val: string | undefined): string {
+  return (val || "").trim().replace(/^"|"$/g, "").replace(/\\n$/g, "");
+}
+
+const TELEGRAM_BOT_TOKEN = cleanEnv(process.env.TELEGRAM_BOT_TOKEN);
+const TELEGRAM_CHAT_ID = cleanEnv(process.env.TELEGRAM_CHAT_ID);
 
 export async function notifyError(context: string, error: unknown) {
   const msg = error instanceof Error ? error.message : String(error);
