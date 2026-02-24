@@ -85,7 +85,7 @@ export default function Header() {
       });
       if (res.ok) {
         const data = await res.json();
-        if (data.credits !== undefined) {
+        if (data.isNew && data.credits !== undefined) {
           incrementCredits();
           incrementRatingsCount();
         }

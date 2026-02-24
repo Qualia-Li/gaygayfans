@@ -12,27 +12,32 @@ export async function POST(req: NextRequest) {
 
   const redis = getRedis();
   const session = await getSession();
+  // For unauthenticated users, validate visitor ID has v_ prefix to prevent email spoofing
+  if (!session?.email && !body.visitorId.startsWith("v_")) {
+    return NextResponse.json({ error: "Invalid visitor ID" }, { status: 400 });
+  }
+
   // Use session email as visitor ID when logged in (enables cross-device sync)
   const visitorId = session?.email || body.visitorId;
   const key = `rating:${body.scenarioId}:${visitorId}`;
 
   // If user just signed in, migrate their anon ratings to their email
-  if (session?.email && body.visitorId !== session.email) {
+  if (session?.email && body.visitorId !== session.email && body.visitorId.startsWith("v_")) {
     const anonKey = `rating:${body.scenarioId}:${body.visitorId}`;
     const anonRating = await redis.get(anonKey);
     if (anonRating && !(await redis.get(key))) {
-      // Copy anon rating to user's key
       await redis.set(key, typeof anonRating === "string" ? anonRating : JSON.stringify(anonRating));
       await redis.sadd(`submissions:${body.scenarioId}`, key);
     }
   }
 
-  // Check if this is a new submission (not a re-submit)
-  const existing = await redis.get(key);
-  const isNew = !existing;
+  // Use SETNX to atomically check if this is a new submission
+  const isNew = await redis.setnx(key, JSON.stringify(body));
 
-  // Store submission keyed by scenario:visitor for idempotency
-  await redis.set(key, JSON.stringify(body));
+  if (!isNew) {
+    // Update existing rating (not new, just overwrite)
+    await redis.set(key, JSON.stringify(body));
+  }
 
   // Also add to a set of all submission keys for this scenario
   await redis.sadd(`submissions:${body.scenarioId}`, key);
@@ -48,12 +53,11 @@ export async function POST(req: NextRequest) {
     credits = result.credits;
     ratingsCount = result.ratingsCount;
   } else if (session?.email) {
-    // Return current values without incrementing
     const { getUser } = await import("@/lib/auth");
     const user = await getUser(session.email);
     credits = user?.credits;
     ratingsCount = user?.ratingsCount;
   }
 
-  return NextResponse.json({ ok: true, credits, ratingsCount, isNew });
+  return NextResponse.json({ ok: true, credits, ratingsCount, isNew: !!isNew });
 }
