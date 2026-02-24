@@ -8,7 +8,7 @@ const bgImages = ["/bg-anime-1.png", "/bg-real-1.png", "/bg-anime-2.png", "/bg-r
 
 export default function AgeGate() {
   const setVerified = useAgeGate((s) => s.setVerified);
-  const [birthYear, setBirthYear] = useState("");
+  const [birthYear, setBirthYear] = useState("2000");
   const [agreedTerms, setAgreedTerms] = useState(false);
   const [bgIndex, setBgIndex] = useState(0);
 
