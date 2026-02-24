@@ -47,8 +47,9 @@ export default function AgeGate() {
       <div className="relative flex min-h-dvh flex-col items-center justify-center py-8">
         <Card size="4" className="mx-4 max-w-md w-full !bg-zinc-900">
           <Flex direction="column" align="center" gap="4">
-            <Text size="8" aria-hidden="true">🏳️‍🌈</Text>
-            <Heading size="6" align="center">Welcome to GaylyFans</Heading>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo-gooey.png" alt="GaylyFans" className="h-16 w-auto" />
+            <Heading size="5" align="center">Welcome</Heading>
             <Text size="2" color="gray" align="center">
               Before entering, please confirm the following:
             </Text>
