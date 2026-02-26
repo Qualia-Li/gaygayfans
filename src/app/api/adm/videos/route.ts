@@ -32,10 +32,24 @@ function getClassifiedMap(): Map<string, ClassifiedItem> {
   return classifiedMap;
 }
 
+const R2_THUMB_BASE = "https://pub-be9e0552363545c5a4778d2715805f99.r2.dev/gaylyfans/thumbnails";
+
 function extractKeyFromUrl(videoUrl: string): string | null {
   const match = videoUrl.match(/generated\/(.+)\.mp4$/);
   if (match) return match[1];
   return null;
+}
+
+function getThumbnailUrl(videoUrl: string): string {
+  // Generated videos: gaylyfans/generated/gaizellic_xxx.mp4 → gaizellic_xxx.jpg
+  const genMatch = videoUrl.match(/generated\/(.+)\.mp4$/);
+  if (genMatch) return `${R2_THUMB_BASE}/${genMatch[1]}.jpg`;
+
+  // Rate videos: /rate/scenario/variant.mp4 → rate_scenario_variant.jpg
+  const rateMatch = videoUrl.match(/rate\/([^/]+)\/(\w+)\.mp4$/);
+  if (rateMatch) return `${R2_THUMB_BASE}/rate_${rateMatch[1]}_${rateMatch[2]}.jpg`;
+
+  return "";
 }
 
 function detectModel(videoUrl: string): string {
@@ -143,6 +157,7 @@ export async function GET() {
     return {
       id: v.id,
       videoUrl: v.videoUrl,
+      thumbnailUrl: getThumbnailUrl(v.videoUrl),
       title: v.title,
       creator: v.creator,
       model: detectModel(v.videoUrl),

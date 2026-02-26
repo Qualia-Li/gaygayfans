@@ -6,6 +6,7 @@ import { Container, Heading, Text, Card, Flex, Badge, Button, Select, TextField 
 interface EnrichedVideo {
   id: string;
   videoUrl: string;
+  thumbnailUrl: string;
   title: string;
   creator: string;
   model: string;
@@ -233,15 +234,18 @@ export default function AdminRatingPage() {
                       className="w-[100px] h-[56px] bg-zinc-800 rounded overflow-hidden cursor-pointer relative"
                       onClick={() => setModalVideo(v)}
                     >
-                      <video
-                        src={v.videoUrl}
-                        className="w-full h-full object-cover"
-                        muted
-                        playsInline
-                        preload="metadata"
-                      />
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/30 hover:bg-black/10 transition-colors">
-                        <svg className="h-6 w-6 text-white/80" fill="currentColor" viewBox="0 0 24 24">
+                      {v.thumbnailUrl ? (
+                        <img
+                          src={v.thumbnailUrl}
+                          alt={v.title}
+                          className="w-full h-full object-cover"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-zinc-700" />
+                      )}
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/20 hover:bg-black/0 transition-colors">
+                        <svg className="h-5 w-5 text-white/70" fill="currentColor" viewBox="0 0 24 24">
                           <path d="M8 5v14l11-7z" />
                         </svg>
                       </div>
