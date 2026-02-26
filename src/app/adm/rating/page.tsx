@@ -40,6 +40,7 @@ export default function AdminRatingPage() {
   const [filterModel, setFilterModel] = useState<string>("all");
   const [filterCreator, setFilterCreator] = useState<string>("");
   const [playingId, setPlayingId] = useState<string | null>(null);
+  const [modalVideo, setModalVideo] = useState<EnrichedVideo | null>(null);
 
   useEffect(() => {
     fetch("/api/adm/videos")
@@ -161,6 +162,51 @@ export default function AdminRatingPage() {
           </Button>
         </Flex>
 
+        {/* Full-screen video modal */}
+        {modalVideo && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/90"
+            onClick={() => setModalVideo(null)}
+          >
+            <div
+              className="relative max-w-[90vw] max-h-[90vh] flex flex-col items-center"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <video
+                src={modalVideo.videoUrl}
+                className="max-w-full max-h-[80vh] rounded-lg"
+                autoPlay
+                loop
+                playsInline
+                controls
+              />
+              <div className="mt-3 text-center">
+                <Text size="3" weight="medium" className="text-white">{modalVideo.title}</Text>
+                <Flex gap="2" justify="center" mt="1">
+                  <Badge color={POSITION_COLORS[modalVideo.position] ?? "gray"} variant="soft" size="1">
+                    {modalVideo.position}
+                  </Badge>
+                  <Badge color={modalVideo.model === "wan2.2" ? "blue" : "gray"} variant="outline" size="1">
+                    {modalVideo.model}
+                  </Badge>
+                  <Text size="1" color="gray">{modalVideo.lora}</Text>
+                </Flex>
+                {modalVideo.avgStars !== null && modalVideo.avgStars > 0 && (
+                  <Text size="2" className="text-orange-400 mt-1 block">
+                    {modalVideo.avgStars.toFixed(1)} ★ ({modalVideo.totalRatings} ratings)
+                  </Text>
+                )}
+              </div>
+              <button
+                className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-zinc-800 text-white flex items-center justify-center hover:bg-zinc-700"
+                onClick={() => setModalVideo(null)}
+              >
+                ✕
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Table */}
         <div className="overflow-x-auto rounded-lg border border-zinc-800">
           <table className="w-full text-sm">
@@ -185,24 +231,20 @@ export default function AdminRatingPage() {
                   <td className="px-3 py-2">
                     <div
                       className="w-[100px] h-[56px] bg-zinc-800 rounded overflow-hidden cursor-pointer relative"
-                      onClick={() => setPlayingId(playingId === v.id ? null : v.id)}
+                      onClick={() => setModalVideo(v)}
                     >
                       <video
                         src={v.videoUrl}
                         className="w-full h-full object-cover"
-                        autoPlay={playingId === v.id}
                         muted
-                        loop
                         playsInline
                         preload="metadata"
                       />
-                      {playingId !== v.id && (
-                        <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                          <svg className="h-6 w-6 text-white/80" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M8 5v14l11-7z" />
-                          </svg>
-                        </div>
-                      )}
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/30 hover:bg-black/10 transition-colors">
+                        <svg className="h-6 w-6 text-white/80" fill="currentColor" viewBox="0 0 24 24">
+                          <path d="M8 5v14l11-7z" />
+                        </svg>
+                      </div>
                     </div>
                   </td>
                   <td className="px-3 py-2 text-zinc-400 font-mono text-xs">{v.id}</td>
