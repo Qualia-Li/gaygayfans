@@ -12,10 +12,12 @@ interface EnrichedVideo {
   position: string;
   lora: string;
   clip_score: number | null;
-  popularity_score: number | null;
+  avgStars: number | null;
+  totalRatings: number;
+  bestPicks: number;
 }
 
-type SortKey = "id" | "clip_score" | "popularity_score";
+type SortKey = "id" | "clip_score" | "avgStars" | "totalRatings" | "bestPicks";
 
 const POSITION_COLORS: Record<string, "orange" | "red" | "blue" | "green" | "purple" | "pink" | "yellow" | "gray"> = {
   general: "gray",
@@ -28,18 +30,11 @@ const POSITION_COLORS: Record<string, "orange" | "red" | "blue" | "green" | "pur
   footjob: "yellow",
 };
 
-function fmt(n: number | null): string {
-  if (n === null) return "-";
-  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
-  if (n >= 1_000) return `${(n / 1_000).toFixed(1)}K`;
-  return String(Math.round(n));
-}
-
 export default function AdminRatingPage() {
   const [videos, setVideos] = useState<EnrichedVideo[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [sortKey, setSortKey] = useState<SortKey>("popularity_score");
+  const [sortKey, setSortKey] = useState<SortKey>("avgStars");
   const [sortDesc, setSortDesc] = useState(true);
   const [filterPosition, setFilterPosition] = useState<string>("all");
   const [filterModel, setFilterModel] = useState<string>("all");
@@ -179,7 +174,9 @@ export default function AdminRatingPage() {
                 <th className="px-3 py-2 text-left text-xs font-medium text-zinc-400 uppercase">Model</th>
                 <th className="px-3 py-2 text-left text-xs font-medium text-zinc-400 uppercase">LoRA</th>
                 <SortHeader label="CLIP" field="clip_score" />
-                <SortHeader label="Score" field="popularity_score" />
+                <SortHeader label="Rating" field="avgStars" />
+                <SortHeader label="# Rated" field="totalRatings" />
+                <SortHeader label="Best" field="bestPicks" />
               </tr>
             </thead>
             <tbody>
@@ -225,7 +222,17 @@ export default function AdminRatingPage() {
                     <span title={v.lora} className="block truncate">{v.lora}</span>
                   </td>
                   <td className="px-3 py-2 text-zinc-300 tabular-nums">{v.clip_score?.toFixed(1) ?? "-"}</td>
-                  <td className="px-3 py-2 text-zinc-300 tabular-nums font-medium">{fmt(v.popularity_score)}</td>
+                  <td className="px-3 py-2 tabular-nums font-medium">
+                    {v.avgStars !== null && v.avgStars > 0 ? (
+                      <Badge color="orange" variant="solid" size="1">
+                        {v.avgStars.toFixed(1)} ★
+                      </Badge>
+                    ) : (
+                      <span className="text-zinc-600">-</span>
+                    )}
+                  </td>
+                  <td className="px-3 py-2 text-zinc-300 tabular-nums">{v.totalRatings || "-"}</td>
+                  <td className="px-3 py-2 text-zinc-300 tabular-nums">{v.bestPicks || "-"}</td>
                 </tr>
               ))}
             </tbody>

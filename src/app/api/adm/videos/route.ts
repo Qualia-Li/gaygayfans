@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
+import { getRedis } from "@/lib/redis";
 import feedVideos from "@/data/feed-videos.json";
+import scenarios from "@/data/scenarios.json";
 import classifiedData from "@/x-downloads-data/top_1000_classified.json";
+import type { Scenario, RatingSubmission } from "@/types/rate";
 
 const ADMIN_EMAIL = "liquanlai1995@gmail.com";
 
@@ -36,8 +39,9 @@ function extractKeyFromUrl(videoUrl: string): string | null {
 }
 
 function detectModel(videoUrl: string): string {
-  if (videoUrl.includes("pub-fd4d644997b0483d8fd457ab9b00a1c1")) return "wan2.2";
-  if (videoUrl.includes("pub-be9e0552363545c5a4778d2715805f99")) return "lora-test";
+  // All are on the same gaygayfans bucket now, differentiate by path
+  if (videoUrl.includes("/gaylyfans/generated/")) return "wan2.2";
+  if (videoUrl.includes("/rate/")) return "lora-test";
   return "unknown";
 }
 
@@ -56,7 +60,6 @@ const LORA_CONFIG: Record<string, string> = {
   general: "General-NSFW HIGH @1.5",
 };
 
-// First 21 videos are manually curated lora-test variants with known configs
 const RATE_LORA_CONFIG: Record<string, string> = {
   achai_new: "Gay 1.2 + PENIS 1.0 + Cowgirl 0.8",
   lymss_oral: "Gay 1.2 + PENIS 1.0 + Blowjob 0.8",
@@ -77,12 +80,46 @@ const RATE_LORA_CONFIG: Record<string, string> = {
 };
 
 function getLoraLabel(videoUrl: string, position: string): string {
-  // For rate/ URLs, extract scenario name
   const rateMatch = videoUrl.match(/rate\/([^/]+)\//);
   if (rateMatch) return RATE_LORA_CONFIG[rateMatch[1]] ?? "unknown";
-
-  // For generated videos, derive from position
   return LORA_CONFIG[position] ?? "unknown";
+}
+
+// Fetch real user ratings from Redis
+async function getRatingsMap(): Promise<Map<string, { avgStars: number; totalRatings: number; bestPicks: number }>> {
+  const ratingsMap = new Map<string, { avgStars: number; totalRatings: number; bestPicks: number }>();
+  const redis = getRedis();
+
+  for (const scenario of scenarios as Scenario[]) {
+    const keys = await redis.smembers(`submissions:${scenario.id}`);
+    const submissions: RatingSubmission[] = [];
+
+    for (const key of keys) {
+      const data = await redis.get<string>(key);
+      if (data) {
+        submissions.push(typeof data === "string" ? JSON.parse(data) : data);
+      }
+    }
+
+    for (const variant of scenario.variants) {
+      const variantRatings = submissions
+        .flatMap((s) => s.ratings)
+        .filter((r) => r.variantId === variant.id);
+      const bestPicks = submissions.filter((s) => s.bestVariantId === variant.id).length;
+
+      if (variantRatings.length > 0 || bestPicks > 0) {
+        ratingsMap.set(variant.videoUrl, {
+          avgStars: variantRatings.length > 0
+            ? variantRatings.reduce((sum, r) => sum + r.stars, 0) / variantRatings.length
+            : 0,
+          totalRatings: variantRatings.length,
+          bestPicks,
+        });
+      }
+    }
+  }
+
+  return ratingsMap;
 }
 
 export async function GET() {
@@ -95,11 +132,13 @@ export async function GET() {
   }
 
   const classified = getClassifiedMap();
+  const ratings = await getRatingsMap();
 
   const enriched = (feedVideos as Array<{ id: string; videoUrl: string; title: string; creator: string; creatorAvatar: string; likes: number; comments: number; shares: number; tags: string[] }>).map((v) => {
     const key = extractKeyFromUrl(v.videoUrl);
     const meta = key ? classified.get(key) : null;
     const position = meta?.position ?? v.tags.find((t) => !["ai", "wan2.1", "wan2.2", "lora", "generated"].includes(t)) ?? "unknown";
+    const rating = ratings.get(v.videoUrl);
 
     return {
       id: v.id,
@@ -110,7 +149,9 @@ export async function GET() {
       position,
       lora: getLoraLabel(v.videoUrl, position),
       clip_score: meta?.clip_score ?? null,
-      popularity_score: meta?.popularity_score ?? null,
+      avgStars: rating?.avgStars ?? null,
+      totalRatings: rating?.totalRatings ?? 0,
+      bestPicks: rating?.bestPicks ?? 0,
     };
   });
 
