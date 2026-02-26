@@ -108,10 +108,14 @@ async function getRatingsMap(): Promise<Map<string, { avgStars: number; totalRat
     const keys = await redis.smembers(`submissions:${scenario.id}`);
     const submissions: RatingSubmission[] = [];
 
-    for (const key of keys) {
-      const data = await redis.get<string>(key);
+    const results = await Promise.all(keys.map((key) => redis.get<string>(key)));
+    for (const data of results) {
       if (data) {
-        submissions.push(typeof data === "string" ? JSON.parse(data) : data);
+        try {
+          submissions.push(typeof data === "string" ? JSON.parse(data) : data);
+        } catch {
+          // skip malformed Redis entry
+        }
       }
     }
 

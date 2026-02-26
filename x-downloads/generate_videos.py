@@ -339,6 +339,17 @@ async def poll_one(
     url = RESULT_URL.format(request_id=request_id)
     try:
         async with session.get(url, headers=headers) as resp:
+            if resp.status != 200:
+                progress[path].setdefault("poll_errors", 0)
+                progress[path]["poll_errors"] += 1
+                if progress[path]["poll_errors"] >= 10:
+                    progress[path]["status"] = "failed"
+                    progress[path]["error"] = f"Too many poll errors (HTTP {resp.status})"
+                    save_progress(progress)
+                    print(f"[failed] {Path(path).name}: HTTP {resp.status} after 10 retries")
+                    return True
+                print(f"[warn] Poll HTTP {resp.status} for {Path(path).name}")
+                return False
             resp_data = await resp.json()
             status = resp_data.get("data", {}).get("status", "unknown")
             if status == "completed":
@@ -354,9 +365,26 @@ async def poll_one(
                 save_progress(progress)
                 print(f"[failed] {Path(path).name}: {progress[path]['error']}")
                 return True
+            elif status == "unknown":
+                progress[path].setdefault("poll_errors", 0)
+                progress[path]["poll_errors"] += 1
+                if progress[path]["poll_errors"] >= 10:
+                    progress[path]["status"] = "failed"
+                    progress[path]["error"] = f"Unknown status after 10 polls"
+                    save_progress(progress)
+                    print(f"[failed] {Path(path).name}: unknown status after 10 retries")
+                    return True
             # still processing
             return False
     except Exception as e:
+        progress[path].setdefault("poll_errors", 0)
+        progress[path]["poll_errors"] += 1
+        if progress[path]["poll_errors"] >= 10:
+            progress[path]["status"] = "failed"
+            progress[path]["error"] = f"Poll exception after 10 retries: {e}"
+            save_progress(progress)
+            print(f"[failed] {Path(path).name}: {e} after 10 retries")
+            return True
         print(f"[warn] Poll error for {Path(path).name}: {e}")
         return False
 
@@ -406,7 +434,7 @@ async def post_generation(progress: dict[str, dict], items: list[dict]) -> None:
     if FEED_FILE.exists():
         feed = json.loads(FEED_FILE.read_text())
     existing_urls = {v["videoUrl"] for v in feed}
-    next_id = max((int(v["id"]) for v in feed), default=0) + 1
+    next_id = max((int(v["id"]) for v in feed if v["id"].isdigit()), default=0) + 1
 
     new_entries = []
 
@@ -430,7 +458,9 @@ async def post_generation(progress: dict[str, dict], items: list[dict]) -> None:
                 try:
                     async with session.get(cloudfront_url) as resp:
                         if resp.status == 200:
-                            local_file.write_bytes(await resp.read())
+                            with open(local_file, "wb") as f:
+                                async for chunk in resp.content.iter_chunked(1024 * 1024):
+                                    f.write(chunk)
                         else:
                             print(f"[warn] Download failed for {video_key}: HTTP {resp.status}")
                             continue
@@ -476,7 +506,9 @@ async def post_generation(progress: dict[str, dict], items: list[dict]) -> None:
 
     if new_entries:
         feed.extend(new_entries)
-        FEED_FILE.write_text(json.dumps(feed, indent=2, ensure_ascii=False))
+        tmp_file = FEED_FILE.with_suffix(".json.tmp")
+        tmp_file.write_text(json.dumps(feed, indent=2, ensure_ascii=False))
+        tmp_file.replace(FEED_FILE)
         print(f"\n[feed] Updated {FEED_FILE.name}: added {len(new_entries)} videos (total: {len(feed)})")
 
         # Also copy classified data to src for admin page
