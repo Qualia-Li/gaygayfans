@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getSession } from "@/lib/auth";
+import { getSession } from "@/lib/auth/server";
 import { getRedis } from "@/lib/redis";
 import feedVideos from "@/data/feed-videos.json";
 import scenarios from "@/data/scenarios.json";
