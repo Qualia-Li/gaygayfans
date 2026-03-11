@@ -1,12 +1,10 @@
 import { NextResponse } from "next/server";
-import { getSession } from "@/lib/auth/server";
+import { getSession, isAdmin } from "@/lib/auth/server";
 import { redis } from "@/lib/upstash";
 import feedVideos from "@/data/feed-videos.json";
 import scenarios from "@/data/scenarios.json";
 import classifiedData from "@/src/x-downloads-data/top_1000_classified.json";
 import type { Scenario, RatingSubmission } from "@/types/gaylyfans";
-
-const ADMIN_EMAIL = "liquanlai1995@gmail.com";
 
 interface ClassifiedItem {
   filename: string;
@@ -105,37 +103,41 @@ async function getRatingsMap(): Promise<Map<string, { avgStars: number; totalRat
   if (!redis) return ratingsMap;
   const r = redis;
 
-  for (const scenario of scenarios as Scenario[]) {
-    const keys = await r.smembers(`submissions:${scenario.id}`);
-    const submissions: RatingSubmission[] = [];
+  try {
+    for (const scenario of scenarios as Scenario[]) {
+      const keys = await r.smembers(`submissions:${scenario.id}`);
+      const submissions: RatingSubmission[] = [];
 
-    const results = await Promise.all(keys.map((key) => r.get<string>(key)));
-    for (const data of results) {
-      if (data) {
-        try {
-          submissions.push(typeof data === "string" ? JSON.parse(data) : data);
-        } catch {
-          // skip malformed Redis entry
+      const results = await Promise.all(keys.map((key) => r.get<string>(key)));
+      for (const data of results) {
+        if (data) {
+          try {
+            submissions.push(typeof data === "string" ? JSON.parse(data) : data);
+          } catch {
+            // skip malformed Redis entry
+          }
+        }
+      }
+
+      for (const variant of scenario.variants) {
+        const variantRatings = submissions
+          .flatMap((s) => s.ratings)
+          .filter((r) => r.variantId === variant.id);
+        const bestPicks = submissions.filter((s) => s.bestVariantId === variant.id).length;
+
+        if (variantRatings.length > 0 || bestPicks > 0) {
+          ratingsMap.set(variant.videoUrl, {
+            avgStars: variantRatings.length > 0
+              ? variantRatings.reduce((sum, r) => sum + r.stars, 0) / variantRatings.length
+              : 0,
+            totalRatings: variantRatings.length,
+            bestPicks,
+          });
         }
       }
     }
-
-    for (const variant of scenario.variants) {
-      const variantRatings = submissions
-        .flatMap((s) => s.ratings)
-        .filter((r) => r.variantId === variant.id);
-      const bestPicks = submissions.filter((s) => s.bestVariantId === variant.id).length;
-
-      if (variantRatings.length > 0 || bestPicks > 0) {
-        ratingsMap.set(variant.videoUrl, {
-          avgStars: variantRatings.length > 0
-            ? variantRatings.reduce((sum, r) => sum + r.stars, 0) / variantRatings.length
-            : 0,
-          totalRatings: variantRatings.length,
-          bestPicks,
-        });
-      }
-    }
+  } catch {
+    // Return partial results on Redis failure
   }
 
   return ratingsMap;
@@ -143,10 +145,10 @@ async function getRatingsMap(): Promise<Map<string, { avgStars: number; totalRat
 
 export async function GET() {
   const session = await getSession();
-  if (!session?.user?.email) {
+  if (!session?.user) {
     return NextResponse.json({ error: "Sign in required" }, { status: 401 });
   }
-  if (session.user.email !== ADMIN_EMAIL) {
+  if (!(await isAdmin(session))) {
     return NextResponse.json({ error: "Admin access only" }, { status: 403 });
   }
 

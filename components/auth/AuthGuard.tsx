@@ -16,7 +16,7 @@ export async function AuthGuard({
   }
 
   // dashboard/(admin)/*
-  if (role && role === "admin" && !(await isAdmin())) {
+  if (role && role === "admin" && !(await isAdmin(session))) {
     redirect("/dashboard");
   }
 

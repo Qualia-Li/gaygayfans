@@ -12,19 +12,23 @@ export const getSession = async () => {
   return session;
 };
 
-export const isAdmin = async (): Promise<boolean> => {
-  const session = await getSession()
+export const isAdmin = async (existingSession?: Awaited<ReturnType<typeof getSession>>): Promise<boolean> => {
+  const session = existingSession ?? await getSession();
   const user = session?.user;
   if (!user) {
-    redirect('/login');
+    return false;
   }
 
-  const userDataResults = await db
-    .select({ role: userSchema.role })
-    .from(userSchema)
-    .where(eq(userSchema.id, user.id))
-    .limit(1);
+  try {
+    const userDataResults = await db
+      .select({ role: userSchema.role })
+      .from(userSchema)
+      .where(eq(userSchema.id, user.id))
+      .limit(1);
 
-  const userData = userDataResults[0];
-  return !!userData && userData.role === 'admin';
+    const userData = userDataResults[0];
+    return !!userData && userData.role === 'admin';
+  } catch {
+    return false;
+  }
 }
