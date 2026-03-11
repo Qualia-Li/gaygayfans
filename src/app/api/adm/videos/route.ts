@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth/server";
-import { getRedis } from "@/lib/redis";
+import { redis } from "@/lib/upstash";
 import feedVideos from "@/data/feed-videos.json";
 import scenarios from "@/data/scenarios.json";
-import classifiedData from "@/x-downloads-data/top_1000_classified.json";
+import classifiedData from "@/src/x-downloads-data/top_1000_classified.json";
 import type { Scenario, RatingSubmission } from "@/types/rate";
 
 const ADMIN_EMAIL = "liquanlai1995@gmail.com";
@@ -102,7 +102,7 @@ function getLoraLabel(videoUrl: string, position: string): string {
 // Fetch real user ratings from Redis
 async function getRatingsMap(): Promise<Map<string, { avgStars: number; totalRatings: number; bestPicks: number }>> {
   const ratingsMap = new Map<string, { avgStars: number; totalRatings: number; bestPicks: number }>();
-  const redis = getRedis();
+  if (!redis) return ratingsMap;
 
   for (const scenario of scenarios as Scenario[]) {
     const keys = await redis.smembers(`submissions:${scenario.id}`);
